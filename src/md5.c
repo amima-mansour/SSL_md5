@@ -1,4 +1,5 @@
 #include "../inc/ft_ssl.h"
+#include "../libft/libft.h"
 
 static const uint32_t g_s[] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
@@ -25,110 +26,103 @@ static const uint32_t g_t[] = {
 	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
-void    init_md5(t_md5_context *context, uint8_t *str)
-{
+static void    init_md5(t_md5_context *context)
+{   
     context->state[0] = 0x67452301; 
     context->state[1] = 0xefcdab89;
     context->state[2] = 0x98badcfe;
     context->state[3] = 0x10325476;
-    context->len = ft_strlen(str);
+    context->initial_state[0] = 0x67452301; 
+    context->initial_state[1] = 0xefcdab89;
+    context->initial_state[2] = 0x98badcfe;
+    context->initial_state[3] = 0x10325476;
 }
 
-char    *prepare_msg(unit8_t *msg)
+static uint8_t    *prepare_msg(char *msg, t_md5_context *c)
 {
     size_t      len;
-    size_t      new_len;
-    char        *new_msg;
-    size_t      len_bits;     
+    int         new_len;
+    uint8_t     *new_msg;
+    uint32_t    len_bits;    
 
     len = ft_strlen(msg);
     len_bits = len * 8;
-    new_len =  len_bits + 1;
-    if (len % 512 < 448)
-        new_len += 448 - len % 512;
-    else
-        new_len += 448 + (512 -  len % 512);   
-    if (!(new_msg = (char*)ft_calloc(new_len + 64, 1)))
+    new_len = len_bits + 1;
+    while(new_len % 512 != 448)
+        new_len++;
+    new_len /= 8;
+    c->len = new_len;   
+    if (!(new_msg = ft_calloc(new_len + 64, 1)))
         return(NULL);
     ft_memcpy(new_msg, msg, len);
     new_msg[len] = 128;
-    ft_memcpy(str + new_len, &len_bits, 4);
+    ft_memcpy(new_msg + new_len, &len_bits, 4);
     return(new_msg);
 }
 
-void        put_in_variable(t_md5_context *c, unit32_t a, unit32_t offset)
+static void        put_in_variable(t_md5_context *c, uint32_t f, uint32_t w, uint32_t offset)
 {
     uint32_t temp;
 
     temp = c->state[3];
     c->state[3] = c->state[2];
     c->state[2] = c->state[1];
-    c->state[1] += LEFTROTATE(( c->state[0]+ a + g_t[offset]), g_s[offset]);
+    c->state[1] += LEFTROTATE((c->state[0] + f + g_t[offset] + w), g_s[offset]);
     c->state[0] = temp;
-
 }
 
-void        subtreat_md5(t_md5_context *c, uint32_t *w, uint32_t offset)
+static void        subtreat_md5(t_md5_context *c, uint32_t *w)
 {
     uint32_t i;
     uint32_t g;
-    
+
     i = -1;
     while(++i < 16)
-        put_in_variable(c, F(b, c, d) + w[i], offset);
-    while(++i < 32)
+        put_in_variable(c, F(c->state[1], c->state[2], c->state[3]), w[i], i);
+    while(i < 32)
     {
-        g = (5 × i + 1) % 16;
-        put_in_variable(c, G(b, c, d) + w[g], offset);
+        g = (5 * i + 1) % 16;
+        put_in_variable(c, G(c->state[1], c->state[2], c->state[3]), w[g], i++);
     }
-    while(++i < 48)
+    while(i < 48)
     {
-        g = (3 × i + 5) % 16;
-        put_in_variable(c, H(b, c, d) + w[g], offset);
+        g = (3 * i + 5) % 16;
+        put_in_variable(c, H(c->state[1], c->state[2], c->state[3]), w[g], i++);
     }
-    while(++i < 64)
+    while(i < 64)
     {
-        g = (7 × i) % 16;
-        put_in_variable(c, I(b, c, d)+ w[g], offset);
-    }
-}
-
-void    print_md5(t_md5_context *c)
-{
-    uint8_t *p;
-    int     i;
-
-    i = -1;
-    while(++i < 4)
-    {
-        p = (uint8_t *)&(c->initial_state[i]);
-        printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3], c->initial_state[i]);
+        g = (7 * i) % 16;
+        put_in_variable(c, I(c->state[1], c->state[2], c->state[3]), w[g], i++);
     }
 }
-void    md5(uint8_t *msg)
-{
-    int             offset;
-    int             temp;
-    t_md5_context   *c;
 
-    if (!(msg =  prepare_msg(msg)))
+void                md5(char *msg, t_flags flags, char *filename)
+{
+    uint32_t        offset;
+    t_md5_context   c;
+    uint32_t        *w;
+    uint8_t         *new_msg;
+
+    init_md5(&c);
+    if (!(new_msg =  prepare_msg(msg, &c)))
         return;
-    init_md5(c, msg);
     offset = 0;
-    while(offset < c->len)
+    while(offset < c.len)
     {   
-        w = (uint32_t *) (msg + offset);
-        c->state[0] = c->initial_state[0]; 
-        c->state[1] = c->initial_state[1];
-        c->state[2] = c->initial_state[2];
-        c->state[3] = c->initial_state[3];
-        subtreat_md5(c, w)
-        offset += 64
-        c->initial_state[0] += c->state[0];
-        c->initial_state[1] += c->state[1];
-        c->initial_state[2] += c->state[2];
-        c->initial_state[3] += c->state[3];
+        w = (uint32_t *)(new_msg + offset);
+        c.state[0] = c.initial_state[0]; 
+        c.state[1] = c.initial_state[1];
+        c.state[2] = c.initial_state[2];
+        c.state[3] = c.initial_state[3];
+        subtreat_md5(&c, w);
+        offset += 64;
+        c.initial_state[0] += c.state[0];
+        c.initial_state[1] += c.state[1];
+        c.initial_state[2] += c.state[2];
+        c.initial_state[3] += c.state[3];
     }
+    free(new_msg);
     // A coder le print final
-    print_md5(c);
+    print_md5(c, flags, filename);
+    //write(1, "\n", 1);
 }

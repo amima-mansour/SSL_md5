@@ -47,23 +47,14 @@ int	        ft_strcmp(char const *str1, char const *str2)
 //     return(result)
 // }
 
-void	    *ft_memccpy(void *dst, void const *src, int c, size_t size)
-{
-	unsigned char	*dst1;
-	unsigned char	*src1;
-	size_t			i;
 
-	i = 0;
-	dst1 = (unsigned char*)dst;
-	src1 = (unsigned char*)src;
-	while (i < size)
-	{
-		dst1[i] = src1[i];
-		if (src1[i] == (unsigned char)c)
-			return ((void*)(dst1 + i + 1));
-		i++;
-	}
-	return (NULL);
+void		*ft_memcpy (void *dest, const void *src, size_t len)
+{
+	char *d = dest;
+	const char *s = src;
+	while (len--)
+    	*d++ = *s++;
+	return dest;
 }
 
 static void	ft_bzero(void *s, size_t n)
