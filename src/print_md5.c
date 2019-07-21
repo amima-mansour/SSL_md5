@@ -28,6 +28,7 @@ static  char *str_msg(t_md5_context c)
         convert_to_hex((char)p[3], str + j + 6);
         j += 8;
     }
+    str[j] = '\0';
     return(str);
 }
 
@@ -37,16 +38,20 @@ void    print_md5(t_md5_context c, t_flags flags, char *filename)
 
     s = str_msg(c);
 
-    if (filename && !flags.r && !flags.q && flags.s)
+    if ((filename || (flags.s && filename)) && !flags.r && !flags.q)
     {
         ft_putstr("MD5 (");
+        if (flags.s && flags.str)
+            ft_putstr("\"");
         ft_putstr(filename);
+        if (flags.s && flags.str)
+            ft_putstr("\"");
         ft_putstr(") = ");
     }
     ft_putstr(s);
     if (filename && !flags.q && flags.r)
     {
-        write(1, " ", 1);    
+        ft_putstr(" ");    
         ft_putstr(filename);
     }
     ft_putstr("\n");

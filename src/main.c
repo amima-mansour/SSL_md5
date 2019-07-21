@@ -48,6 +48,7 @@ static 	int flags_check(char **argv, int argc, t_flags *flags)
 	flags->p = 0;
 	flags->s = 0;
 	flags->q = 0;
+	flags->str = NULL;
 	while(++i < argc)
 	{
 		if (ft_strcmp(argv[i],"-r") == 0)
@@ -55,7 +56,14 @@ static 	int flags_check(char **argv, int argc, t_flags *flags)
 		else if (ft_strcmp(argv[i],"-p") == 0)
 			flags->p = 1;
 		else if (ft_strcmp(argv[i],"-s") == 0)
+		{
 			flags->s = 1;
+			if (++i == argc)
+				print_error("md5: option requires an argument -- s\nusage: md5 [-pqrtx] [-s string] [files ...]");
+			else
+				flags->str = argv[i++];
+			break;
+		}
 		else if (ft_strcmp(argv[i],"-q") == 0)
 			flags->q = 1;
 		else
@@ -77,22 +85,19 @@ int		main(int argc, char **argv)
     }
 	if (!(cmd = cmd_check(argv[1])))
 		return(0);
-	if ((i = flags_check(argv, argc, &flags)) == -1)
-		return(0);
-	if ((get_next_line(0, &msg) == 1))
+	i = flags_check(argv, argc, &flags);
+	if (flags.p || (!flags.s && (i == argc)))
 	{
+		get_next_line(0, &msg);
 		if (flags.p)
 			print_error(msg);
 		cmd(msg, flags, NULL);
 		free(msg);
 	}
-	else
+	if (flags.str)
 	{
-		if (i == argc)
-		{
-			print_error("No File or Sentence to Hash");
-			return(-1);
-		}
+		cmd(flags.str, flags, flags.str);
+		flags.str = NULL;
 	}
 	while (i < argc)
 	{

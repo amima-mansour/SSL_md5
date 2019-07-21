@@ -36,6 +36,7 @@ typedef struct      s_flags
     char            q;
     char            s;
     char            p;
+    char            *str;
 }                   t_flags;
 
 /**
