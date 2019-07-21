@@ -1,21 +1,6 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static void print_msg(t_md5_context c)
-{
-    uint8_t *p;
-    int     i;
-
-    i = -1;
-    while(++i < 4)
-    {
-        p = (uint8_t *)&(c.initial_state[i]);
-        printf("%2.2x%2.2x%2.2x%2.2x", p[0], p[1], p[2], p[3]);
-    }
-    printf("\n");
-    return;
-}
-
 static void convert_to_hex(unsigned char nb, char *s)
 {
     s[0] = HEXBASE[nb / 16];
@@ -48,32 +33,23 @@ static  char *str_msg(t_md5_context c)
 
 void    print_md5(t_md5_context c, t_flags flags, char *filename)
 {
+    char    *s;
 
-    printf("%s\n", str_msg(c));
-    if (!filename || flags.q || (!flags.r && !flags.s))
+    s = str_msg(c);
+
+    if (filename && !flags.r && !flags.q && flags.s)
     {
-        /**
-         * forget other flags and print normally the output
-         */
-        print_msg(c);
-        return;
+        ft_putstr("MD5 (");
+        ft_putstr(filename);
+        ft_putstr(") = ");
     }
-    if (flags.r)
+    ft_putstr(s);
+    if (filename && !flags.q && flags.r)
     {
-        /**
-         * check if it's a file, if it is print hash + name of file
-         */
-        print_msg(c);
         write(1, " ", 1);    
-        ft_putendl(filename);
-        return;
+        ft_putstr(filename);
     }
-    ft_putstr("MD5 (");
-    ft_putstr(filename);
-    ft_putstr(") = ");
-    print_msg(c);
-    /**
-     * print normally the output
-     */
+    ft_putstr("\n");
+    free(s);
     return;
 }

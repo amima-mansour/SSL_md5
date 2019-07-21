@@ -1,6 +1,5 @@
-#include "../inc/ft_ssl.h"
-#include "../inc/get_next_line.h"
 #include "../libft/libft.h"
+#include "../inc/ft_ssl.h"
 
 static void	print_error(char *str)
 {
@@ -14,14 +13,14 @@ static	char	*file_check(char *str)
 	int 	fd;
 	char	*read;
 
-	if ((fd = open(str, O_RDONLY) == -1))
+	if ((fd = open(str, O_RDONLY)) == -1)
 	{
 		ft_putstr("ft_ssl: md5: ");
 		ft_putstr(str);
 		print_error(": No such file or directory");
 		return(NULL);
 	}
-	if (get_next_line(fd, &read) == 1)
+	if (get_next_line(fd, &read) == -1)
 	{
 		print_error("Error file");
 		read = NULL;
@@ -82,7 +81,7 @@ int		main(int argc, char **argv)
 		return(0);
 	if ((get_next_line(0, &msg) == 1))
 	{
-		if ((flags.p))
+		if (flags.p)
 			print_error(msg);
 		cmd(msg, flags, NULL);
 		free(msg);

@@ -15,6 +15,15 @@
 # include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <fcntl.h>
+# define BUFF_SIZE 200
+
+typedef struct	s_r
+{
+	int			fd;
+	char		*s;
+	struct s_r	*nxt;
+}				t_r;
 
 typedef	struct		s_list
 {
@@ -89,5 +98,5 @@ char				*ft_strcat(char *s1, char const *s2);
 char				*ft_strncat(char *s, char const *s2, size_t n);
 t_list				*ft_lstnew(void const *content, size_t content_size);
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *element));
-
+int					get_next_line(const int fd, char **line);
 #endif

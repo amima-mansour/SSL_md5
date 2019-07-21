@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/get_next_line.h"
 #include "../libft/libft.h"
 
 t_r			*build_strcuture(const int fd, t_r **get)

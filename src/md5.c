@@ -122,7 +122,5 @@ void                md5(char *msg, t_flags flags, char *filename)
         c.initial_state[3] += c.state[3];
     }
     free(new_msg);
-    // A coder le print final
     print_md5(c, flags, filename);
-    //write(1, "\n", 1);
 }
