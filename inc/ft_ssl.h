@@ -16,19 +16,35 @@
 #define G(x, y, z)          (((x) & (z)) | ((y) & (~z)))
 #define H(x, y, z)          ((x) ^ (y) ^ (z))
 #define I(x, y, z)          ((y) ^ ((x) | (~z)))
-#define LEFTROTATE(x, c)    (((x) << (c)) | ((x) >> (32 - (c))))
+#define ROTLEFT(x, c)       (((x) << (c)) | ((x) >> (32 - (c))))
+#define ROTRIGHT(a,b)       (((a) >> (b)) | ((a) << (32 - (b))))
+
+#define CH(x,y,z)           (((x) & (y)) ^ (~(x) & (z)))
+#define MAJ(x,y,z)          (((x) & (y)) ^ ((x) & (z)) ^ ((y) & (z)))
+#define EP0(x)              (ROTRIGHT(x,2) ^ ROTRIGHT(x,13) ^ ROTRIGHT(x,22))
+#define EP1(x)              (ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
+#define SIG0(x)             (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
+#define SIG1(x)             (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
+
 #define HEXBASE             "0123456789abcdef"
 /**
  * structure
  */
 typedef struct      s_md5_context
 {
-    uint32_t        total[2];          /*!< number of bytes processed  */
     uint32_t        state[4];          /*!< intermediate digest state  */
     unsigned char   buffer[64];   /*!< data block being processed */
     uint32_t        len;
     uint32_t        initial_state[4];
 }                   t_md5_context;
+
+typedef struct      s_sha256_context
+{
+    uint32_t        state[8];          /*!< intermediate digest state  */
+    unsigned char   buffer[64];   /*!< data block being processed */
+    uint32_t        len;
+    uint32_t        initial_state[8];
+}                   t_sha256_context;
 
 typedef struct      s_flags
 {

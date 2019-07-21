@@ -27,12 +27,12 @@ static const uint32_t g_t[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
 
 static void    init_md5(t_md5_context *context)
-{   
-    context->state[0] = 0x67452301; 
+{
+    context->state[0] = 0x67452301;
     context->state[1] = 0xefcdab89;
     context->state[2] = 0x98badcfe;
     context->state[3] = 0x10325476;
-    context->initial_state[0] = 0x67452301; 
+    context->initial_state[0] = 0x67452301;
     context->initial_state[1] = 0xefcdab89;
     context->initial_state[2] = 0x98badcfe;
     context->initial_state[3] = 0x10325476;
@@ -43,7 +43,7 @@ static uint8_t    *prepare_msg(char *msg, t_md5_context *c)
     size_t      len;
     int         new_len;
     uint8_t     *new_msg;
-    uint32_t    len_bits;    
+    uint32_t    len_bits;
 
     len = ft_strlen(msg);
     len_bits = len * 8;
@@ -51,7 +51,7 @@ static uint8_t    *prepare_msg(char *msg, t_md5_context *c)
     while(new_len % 512 != 448)
         new_len++;
     new_len /= 8;
-    c->len = new_len;   
+    c->len = new_len;
     if (!(new_msg = ft_calloc(new_len + 64, 1)))
         return(NULL);
     ft_memcpy(new_msg, msg, len);
@@ -67,7 +67,7 @@ static void        put_in_variable(t_md5_context *c, uint32_t f, uint32_t w, uin
     temp = c->state[3];
     c->state[3] = c->state[2];
     c->state[2] = c->state[1];
-    c->state[1] += LEFTROTATE((c->state[0] + f + g_t[offset] + w), g_s[offset]);
+    c->state[1] += ROTLEFT((c->state[0] + f + g_t[offset] + w), g_s[offset]);
     c->state[0] = temp;
 }
 
