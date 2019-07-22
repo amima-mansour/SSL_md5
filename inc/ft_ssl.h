@@ -20,7 +20,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-# define NB_FUNCTIONS	2
+# define NB_FUNCTIONS	3
 
 # define F(x, y, z)		(((x) & (y)) | ((~x) & (z)))
 # define G(x, y, z)		(((x) & (z)) | ((y) & (~z)))
@@ -35,6 +35,15 @@
 # define EP1(x)			(ROTRIGHT(x,6) ^ ROTRIGHT(x,11) ^ ROTRIGHT(x,25))
 # define SIG0(x)		(ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
 # define SIG1(x)		(ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
+
+#define SHR(x, n)		(x >> n)
+#define ROTR(x, n)		(SHR(x, n) | (x << (64 - n)))
+#define S0(x) 			(ROTR(x, 1) ^ ROTR(x, 8) ^ SHR(x, 7))
+#define S1(x) 			(ROTR(x, 19) ^ ROTR(x, 61) ^ SHR(x, 6))
+#define S2(x) 			(ROTR(x, 28) ^ ROTR(x, 34) ^ ROTR(x, 39))
+#define S3(x) 			(ROTR(x, 14) ^ ROTR(x, 18) ^ ROTR(x, 41))
+#define F0(x, y, z) 	((x & y) | (z & (x | y)))
+#define F1(x, y, z) 	(z ^ (x & (y ^ z)))
 
 # define HEXBASE		"0123456789abcdef"
 
@@ -54,6 +63,13 @@ typedef struct		s_sha256_context
 	uint32_t		t1;
 	uint32_t		t2;
 }					t_sha256_context;
+
+typedef struct		s_sha512_context
+{
+	uint64_t		state[8];
+	uint32_t		len;
+	uint64_t		var[8];
+}					t_sha512_context;
 
 typedef struct		s_flags
 {
@@ -81,7 +97,10 @@ void				print_md5(t_md5_context c, t_flags flags, char *filename);
 void				sha256(char *msg, t_flags flags, char *filename);
 void				print_sha256(t_sha256_context c, t_flags fl, char *f);
 
+void				sha512(char *msg, t_flags flags, char *filename);
+void				print_sha512(t_sha512_context c, t_flags flags, char *f);
 uint32_t			prepare_msg(char *msg, uint8_t **new_msg);
+uint64_t			prepare_msg_sha512(char *msg, uint8_t **new_msg);
 void				init_flags(t_flags *flags);
 int					flags_check(char **argv, int argc, t_flags *flags, int s);
 void				(*cmd_check(char *cmd))(char*, t_flags, char*);

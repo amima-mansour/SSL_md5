@@ -107,7 +107,7 @@ static	void				subtreat_sha256(t_sha256_context *ctx, uint8_t *w)
 void						sha256(char *msg, t_flags flags, char *filename)
 {
 	uint32_t			offset;
-	t_sha256_context	c;
+	t_sha256_context		c;
 	uint8_t				*new_msg;
 
 	init_sha256(&c);

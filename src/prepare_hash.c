@@ -13,6 +13,23 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
+uint64_t	prepare_msg_sha512(char *msg, uint8_t **new_msg)
+{
+	size_t		len;
+	uint64_t	new_len;
+
+	len = ft_strlen(msg);
+	new_len = len * 8 + 1;
+	while (new_len % 1024 != 886)
+		new_len++;
+	new_len /= 8;
+	if (!((*new_msg) = ft_calloc(new_len + 128, 1)))
+		return (0);
+	ft_memcpy((*new_msg), msg, len);
+	(*new_msg)[len] = 128;
+	return (new_len);
+}
+
 uint32_t	prepare_msg(char *msg, uint8_t **new_msg)
 {
 	size_t		len;
@@ -74,12 +91,16 @@ void		(*cmd_check(char *cmd))(char*, t_flags, char*)
 
 	hash[0].name = "md5";
 	hash[1].name = "sha256";
+	hash[1].name = "sha512";
 	hash[0].f = &md5;
 	hash[1].f = &sha256;
+	hash[1].f = &sha512;
 	if (ft_strcmp(cmd, "md5") == 0)
 		return (&md5);
 	if (ft_strcmp(cmd, "sha256") == 0)
 		return (&sha256);
+	if (ft_strcmp(cmd, "sha512") == 0)
+		return (&sha512);
 	cmd_error(hash, cmd);
 	return (NULL);
 }

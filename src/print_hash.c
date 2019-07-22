@@ -64,6 +64,33 @@ static	char	*str_msg_sha256(t_sha256_context c)
 	return (s);
 }
 
+static	char	*str_msg_sha512(t_sha512_context c)
+{
+	char	hash[65];
+	char	*s;
+	int		i;
+
+	i = -1;
+	while (++i < 8)
+	{
+		hash[i] = (c.state[0] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 4] = (c.state[1] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 8] = (c.state[2] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 12] = (c.state[3] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 16] = (c.state[4] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 20] = (c.state[5] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 24] = (c.state[6] >> (56 - i * 8)) & 0x000000ff;
+		hash[i + 28] = (c.state[7] >> (56 - i * 8)) & 0x000000ff;
+	}
+	if (!(s = (char*)malloc(129)))
+		return (NULL);
+	s[129] = '\0';
+	i = -1;
+	while (++i < 64)
+		convert_to_hex(hash[i], s + 2 * i);
+	return (s);
+}
+
 void			print_hash(char *s, t_flags flags, char *filename, char *cmd)
 {
 	if ((filename || (flags.s && filename)) && !flags.r && !flags.q)
@@ -103,6 +130,18 @@ void			print_md5(t_md5_context c, t_flags flags, char *f)
 	char *s;
 
 	s = str_msg_md5(c);
+	if (s)
+	{
+		print_hash(s, flags, f, "MD5");
+		free(s);
+	}
+}
+
+void			print_sha512(t_sha512_context c, t_flags flags, char *f)
+{
+	char *s;
+
+	s = str_msg_sha512(c);
 	if (s)
 	{
 		print_hash(s, flags, f, "MD5");
