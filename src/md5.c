@@ -1,14 +1,26 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   md5.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/22 14:08:53 by amansour          #+#    #+#             */
+/*   Updated: 2019/07/22 14:22:07 by amansour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static const uint32_t g_s[] = {
+static	const	uint32_t	g_s[] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
 	22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16,
 	23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15,
 	21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-static const uint32_t g_t[] = {
+static	const	uint32_t	g_t[] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -24,103 +36,80 @@ static const uint32_t g_t[] = {
 	0xf4292244, 0x432aff97, 0xab9423a7, 0xfc93a039,
 	0x655b59c3, 0x8f0ccc92, 0xffeff47d, 0x85845dd1,
 	0x6fa87e4f, 0xfe2ce6e0, 0xa3014314, 0x4e0811a1,
-	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391};
+	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
+};
 
-static void    init_md5(t_md5_context *context)
+static	void				init_md5(t_md5_context *context)
 {
-    context->state[0] = 0x67452301;
-    context->state[1] = 0xefcdab89;
-    context->state[2] = 0x98badcfe;
-    context->state[3] = 0x10325476;
-    context->initial_state[0] = 0x67452301;
-    context->initial_state[1] = 0xefcdab89;
-    context->initial_state[2] = 0x98badcfe;
-    context->initial_state[3] = 0x10325476;
+	context->state[0] = 0x67452301;
+	context->state[1] = 0xefcdab89;
+	context->state[2] = 0x98badcfe;
+	context->state[3] = 0x10325476;
+	context->len = 0;
 }
 
-static uint8_t    *prepare_msg(char *msg, t_md5_context *c)
+static	void				put_in_variable(t_md5_context *c,
+			uint32_t f, uint32_t w, uint32_t i)
 {
-    size_t      len;
-    int         new_len;
-    uint8_t     *new_msg;
-    uint32_t    len_bits;
+	uint32_t temp;
 
-    len = ft_strlen(msg);
-    len_bits = len * 8;
-    new_len = len_bits + 1;
-    while(new_len % 512 != 448)
-        new_len++;
-    new_len /= 8;
-    c->len = new_len;
-    if (!(new_msg = ft_calloc(new_len + 64, 1)))
-        return(NULL);
-    ft_memcpy(new_msg, msg, len);
-    new_msg[len] = 128;
-    ft_memcpy(new_msg + new_len, &len_bits, 4);
-    return(new_msg);
+	temp = c->var[3];
+	c->var[3] = c->var[2];
+	c->var[2] = c->var[1];
+	c->var[1] += ROTLEFT((c->var[0] + f + g_t[i] + w), g_s[i]);
+	c->var[0] = temp;
 }
 
-static void        put_in_variable(t_md5_context *c, uint32_t f, uint32_t w, uint32_t offset)
+static	void				subtreat_md5(t_md5_context *c, uint32_t *w)
 {
-    uint32_t temp;
+	uint32_t i;
+	uint32_t g;
 
-    temp = c->state[3];
-    c->state[3] = c->state[2];
-    c->state[2] = c->state[1];
-    c->state[1] += ROTLEFT((c->state[0] + f + g_t[offset] + w), g_s[offset]);
-    c->state[0] = temp;
+	i = -1;
+	while (++i < 16)
+		put_in_variable(c, F(c->var[1], c->var[2], c->var[3]), w[i], i);
+	while (i < 32)
+	{
+		g = (5 * i + 1) % 16;
+		put_in_variable(c, G(c->var[1], c->var[2], c->var[3]), w[g], i++);
+	}
+	while (i < 48)
+	{
+		g = (3 * i + 5) % 16;
+		put_in_variable(c, H(c->var[1], c->var[2], c->var[3]), w[g], i++);
+	}
+	while (i < 64)
+	{
+		g = (7 * i) % 16;
+		put_in_variable(c, I(c->var[1], c->var[2], c->var[3]), w[g], i++);
+	}
 }
 
-static void        subtreat_md5(t_md5_context *c, uint32_t *w)
+void						md5(char *msg, t_flags flags, char *filename)
 {
-    uint32_t i;
-    uint32_t g;
+	uint32_t		offset;
+	t_md5_context	c;
+	uint8_t			*new_msg;
+	uint32_t		len_bits;
 
-    i = -1;
-    while(++i < 16)
-        put_in_variable(c, F(c->state[1], c->state[2], c->state[3]), w[i], i);
-    while(i < 32)
-    {
-        g = (5 * i + 1) % 16;
-        put_in_variable(c, G(c->state[1], c->state[2], c->state[3]), w[g], i++);
-    }
-    while(i < 48)
-    {
-        g = (3 * i + 5) % 16;
-        put_in_variable(c, H(c->state[1], c->state[2], c->state[3]), w[g], i++);
-    }
-    while(i < 64)
-    {
-        g = (7 * i) % 16;
-        put_in_variable(c, I(c->state[1], c->state[2], c->state[3]), w[g], i++);
-    }
-}
-
-void                md5(char *msg, t_flags flags, char *filename)
-{
-    uint32_t        offset;
-    t_md5_context   c;
-    uint32_t        *w;
-    uint8_t         *new_msg;
-
-    init_md5(&c);
-    if (!(new_msg =  prepare_msg(msg, &c)))
-        return;
-    offset = 0;
-    while(offset < c.len)
-    {   
-        w = (uint32_t *)(new_msg + offset);
-        c.state[0] = c.initial_state[0]; 
-        c.state[1] = c.initial_state[1];
-        c.state[2] = c.initial_state[2];
-        c.state[3] = c.initial_state[3];
-        subtreat_md5(&c, w);
-        offset += 64;
-        c.initial_state[0] += c.state[0];
-        c.initial_state[1] += c.state[1];
-        c.initial_state[2] += c.state[2];
-        c.initial_state[3] += c.state[3];
-    }
-    free(new_msg);
-    print_md5(c, flags, filename);
+	init_md5(&c);
+	len_bits = ft_strlen(msg) * 8;
+	if ((c.len = prepare_msg(msg, &new_msg)))
+	{
+		ft_memcpy(new_msg + c.len, &(len_bits), 4);
+		offset = 0;
+		while (offset < c.len)
+		{
+			c.i = -1;
+			while (++(c.i) < 4)
+				c.var[c.i] = c.state[c.i];
+			subtreat_md5(&c, (uint32_t *)(new_msg + offset));
+			offset += 64;
+			c.i = -1;
+			while (++(c.i) < 4)
+				c.state[c.i] += c.var[c.i];
+		}
+		free(new_msg);
+		print_md5(c, flags, filename);
+	}
 }

@@ -17,8 +17,10 @@
 SRCS		= $(addprefix $(PATH_SRC)/, \
 							main.c\
 							md5.c\
-							print_md5.c\
 							sha256.c\
+							print_hash.c\
+							error.c\
+							prepare_hash.c\
 							tools.c)
 
 ################################################################################

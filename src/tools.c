@@ -1,16 +1,25 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tools.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/22 18:47:15 by amansour          #+#    #+#             */
+/*   Updated: 2019/07/22 18:49:26 by amansour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/ft_ssl.h"
+#include "../libft/libft.h"
 
-int         ft_strlen(char *s)
+void	convert_to_hex(unsigned char nb, char *s)
 {
-    int i;
-
-    i = 0;
-    while(s[i])
-        i++;
-    return(i);
+	s[0] = HEXBASE[nb / 16];
+	s[1] = HEXBASE[nb % 16];
 }
 
-int	        ft_strcmp(char const *str1, char const *str2)
+int		ft_strcmp(char const *str1, char const *str2)
 {
 	unsigned char	*s2;
 	unsigned char	*s1;
@@ -28,48 +37,19 @@ int	        ft_strcmp(char const *str1, char const *str2)
 	return (s1[i] - s2[i]);
 }
 
-// long long convert_to_little(long long nb)
-// {
-//     unsigned char   tab[8];
-//     long long       result;
-
-//     tab[0] = nb & 255;
-//     tab[1] = (nb >> 8) & 255;
-//     tab[2] = (nb >> 16) & 255;
-//     tab[3] = (nb >> 24) & 255;
-//     tab[4] = (nb >> 32) & 255;
-//     tab[5] = (nb >> 40) & 255;
-//     tab[6] = (nb >> 48) & 255;
-//     tab[7] = (nb >> 56) & 255;
-//     result = (int)tab[0] << 56) + ((int)tab[1] << 48) + ((int)tab[2] << 40);
-//     result += ((int)tab[3] << 32) + ((int)tab[4] << 24) + ((int)tab[5] << 16);
-//     result += ((int)tab[6] << 8) +tab[7] 
-//     return(result)
-// }
-
-
-void		*ft_memcpy (void *dest, const void *src, size_t len)
+void	*ft_memcpy(void *dest, const void *src, size_t len)
 {
-	char *d = dest;
-	const char *s = src;
+	char			*d;
+	const	char	*s;
+
+	s = src;
+	d = dest;
 	while (len--)
-    	*d++ = *s++;
-	return dest;
+		*d++ = *s++;
+	return (dest);
 }
 
-static void	ft_bzero(void *s, size_t n)
-{
-	unsigned char	*s2;
-
-	s2 = (unsigned char *)s;
-	while (n--)
-	{
-		*s2 = 0;
-		s2++;
-	}
-}
-
-void	    *ft_calloc(size_t nmemb, size_t size)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*block;
 
