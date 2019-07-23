@@ -47,6 +47,8 @@
 						(ROTLEFT((x), 8) & 0x00ff00ffL))
 # define HEXBASE		"0123456789abcdef"
 
+typedef t_sha256_context t_sha224_context;
+
 typedef struct		s_md5_context
 {
 	uint32_t		state[4];
