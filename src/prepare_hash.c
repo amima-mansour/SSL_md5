@@ -20,7 +20,7 @@ uint64_t	prepare_msg_sha512(char *msg, uint8_t **new_msg)
 
 	len = ft_strlen(msg);
 	new_len = len * 8 + 1;
-	while (new_len % 1024 != 886)
+	while (new_len % 1024 != 896)
 		new_len++;
 	new_len /= 8;
 	if (!((*new_msg) = ft_calloc(new_len + 128, 1)))

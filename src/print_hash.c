@@ -69,19 +69,23 @@ static	char	*str_msg_sha512(t_sha512_context c)
 	char	hash[65];
 	char	*s;
 	int		i;
+	int		j;
 
 	i = -1;
+	j = 0;
 	while (++i < 8)
 	{
-		hash[i] = (c.state[0] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 4] = (c.state[1] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 8] = (c.state[2] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 12] = (c.state[3] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 16] = (c.state[4] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 20] = (c.state[5] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 24] = (c.state[6] >> (56 - i * 8)) & 0x000000ff;
-		hash[i + 28] = (c.state[7] >> (56 - i * 8)) & 0x000000ff;
-	}
+      hash[j] = (uint8_t) (c.state[i] >> 56);
+      hash[1 + j] = (uint8_t)(c.state[i] >> 48);
+      hash[2 + j] = (uint8_t)(c.state[i] >> 40);
+      hash[3 + j] = (uint8_t)(c.state[i] >> 32);
+      hash[4 + j] = (uint8_t)(c.state[i] >> 24);
+      hash[5 + j] = (uint8_t)(c.state[i] >> 16);
+      hash[6 + j] = (uint8_t)(c.state[i] >> 8);
+      hash[7 + j] = (uint8_t)c.state[i];
+      j += 8;
+    }
+	hash[64] = '\0';
 	if (!(s = (char*)malloc(129)))
 		return (NULL);
 	s[129] = '\0';
@@ -144,7 +148,7 @@ void			print_sha512(t_sha512_context c, t_flags flags, char *f)
 	s = str_msg_sha512(c);
 	if (s)
 	{
-		print_hash(s, flags, f, "MD5");
+		print_hash(s, flags, f, "SHA512");
 		free(s);
 	}
 }
