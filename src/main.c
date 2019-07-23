@@ -13,23 +13,13 @@
 #include "../libft/libft.h"
 #include "../inc/ft_ssl.h"
 
-static	void		hash_stdin(t_flags flag, void (*cmd)(char*, t_flags, char*))
+void			hash_stdin(t_flags flags, void (*cmd)(char*, t_flags, char*))
 {
 	char	*str;
-	char	ch;
-	int		i;
 
-	//get_next_line(0, &str);
-	while (read(0, &ch, 1) > 0)
-		i++;
-	str = (char*)malloc(sizeof(char) * (i + 1));
-	i = 0;
-	while (read(0, &ch, 1) > 0)
-		str[i++] = ch;
-	str[i] = '\0';
-	if (flag.p)
-		ft_putendl(str);
-	cmd(str, flag, NULL);
+	read_stdin(&str);
+	flags.p == 1 ? ft_putendl(str) : 0;
+	cmd(str, flags, NULL);
 	free(str);
 }
 

@@ -21,6 +21,7 @@
 # include <fcntl.h>
 
 # define NB_FUNCTIONS	3
+# define BUF			10000
 
 # define F(x, y, z)		(((x) & (y)) | ((~x) & (z)))
 # define G(x, y, z)		(((x) & (z)) | ((y) & (~z)))
@@ -108,6 +109,7 @@ int					flags_check(char **argv, int argc, t_flags *flags, int s);
 void				(*cmd_check(char *cmd))(char*, t_flags, char*);
 char				*file_check(char *arg, char *cmd);
 
+void				read_stdin(char **str);
 void				usage(void);
 void				file_error(char *cmd, char *str);
 void				cmd_error(t_hash_functions hash[], char *cmd);
