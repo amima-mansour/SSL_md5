@@ -93,10 +93,12 @@ void		(*cmd_check(char *cmd))(char*, t_flags, char*)
 	hash[1].name = "sha256";
 	hash[3].name = "sha512";
 	hash[2].name = "sha224";
+	hash[4].name = "sha384";
 	hash[0].f = &md5;
 	hash[1].f = &sha256;
 	hash[2].f = &sha224;
 	hash[3].f = &sha512;
+	hash[4].f = &sha384;
 	if (ft_strcmp(cmd, "md5") == 0)
 		return (&md5);
 	if (ft_strcmp(cmd, "sha256") == 0)
@@ -105,6 +107,8 @@ void		(*cmd_check(char *cmd))(char*, t_flags, char*)
 		return (&sha512);
 	if (ft_strcmp(cmd, "sha224") == 0)
 		return (&sha224);
+	if (ft_strcmp(cmd, "sha384") == 0)
+		return (&sha384);
 	cmd_error(hash, cmd);
 	return (NULL);
 }

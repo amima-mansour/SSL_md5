@@ -74,6 +74,7 @@ static	char	*str_msg_sha256(t_sha256_context c)
 		hash[i + 24] = (c.state[6] >> (24 - i * 8)) & 0x000000ff;
 		hash[i + 28] = (c.state[7] >> (24 - i * 8)) & 0x000000ff;
 	}
+	hash[32] = '\0';
 	if (!(s = (char*)malloc(65)))
 		return (NULL);
 	s[64] = '\0';
@@ -107,9 +108,28 @@ static	char	*str_msg_sha512(t_sha512_context c)
 	hash[64] = '\0';
 	if (!(s = (char*)malloc(129)))
 		return (NULL);
-	s[129] = '\0';
+	s[128] = '\0';
 	i = -1;
 	while (++i < 64)
+		convert_to_hex(hash[i], s + 2 * i);
+	return (s);
+}
+
+static	char	*str_msg_sha384(t_sha512_context c)
+{
+	char	hash[49];
+	char	*s;
+	int		i;
+
+	i = -1;
+  while (++i  < 48)
+		hash[i] = (c.state[i / 8] >> ((7 - (i % 8)) * 8)) & 0xFF;
+	hash[48] = '\0';
+	if (!(s = (char*)malloc(97)))
+		return (NULL);
+	s[98] = '\0';
+	i = -1;
+	while (++i < 48)
 		convert_to_hex(hash[i], s + 2 * i);
 	return (s);
 }
@@ -163,14 +183,17 @@ void			print_md5(t_md5_context c, t_flags flags, char *f)
 	}
 }
 
-void			print_sha512(t_sha512_context c, t_flags flags, char *f)
+void			print_sha512(t_sha512_context c, t_flags flags, char *f, char *str)
 {
 	char *s;
 
-	s = str_msg_sha512(c);
+	if (ft_strcmp(str, "SHA256") == 0)
+		s = str_msg_sha512(c);
+	else
+		s = str_msg_sha384(c);
 	if (s)
 	{
-		print_hash(s, flags, f, "SHA512");
+		print_hash(s, flags, f, str);
 		free(s);
 	}
 }

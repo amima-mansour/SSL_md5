@@ -20,7 +20,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-# define NB_FUNCTIONS	4
+# define NB_FUNCTIONS	5
 # define BUF			10000
 
 # define F(x, y, z)		(((x) & (y)) | ((~x) & (z)))
@@ -101,7 +101,8 @@ void				print_sha256(t_sha256_context c, t_flags flags, char *f, char *str);
 void				sha224(char *msg, t_flags flags, char *filename);
 
 void				sha512(char *msg, t_flags flags, char *filename);
-void				print_sha512(t_sha512_context c, t_flags flags, char *f);
+void				print_sha512(t_sha512_context c, t_flags flags, char *f, char *s);
+void				sha384(char *msg, t_flags flags, char *filename);
 
 uint32_t			prepare_msg(char *msg, uint8_t **new_msg);
 uint64_t			prepare_msg_sha512(char *msg, uint8_t **new_msg);
@@ -120,5 +121,6 @@ void				flag_error(char c, char *cmd);
 /**
  * hash_sha2_256.c
  */
-void				hash_sha_256(t_sha256_context *c, uint8_t **new_msg, size_t len, const uint32_t k[]);
+void				hash_sha_256(t_sha256_context *c, uint8_t **new_msg, size_t len);
+void				hash_sha_512(t_sha512_context *c, uint8_t **new_msg, size_t len);
 #endif
