@@ -20,7 +20,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-# define NB_FUNCTIONS	3
+# define NB_FUNCTIONS	4
 # define BUF			10000
 
 # define F(x, y, z)		(((x) & (y)) | ((~x) & (z)))
@@ -46,8 +46,6 @@
 #define BYTESWAP(x) 	((ROTRIGHT((x), 8) & 0xff00ff00L) | \
 						(ROTLEFT((x), 8) & 0x00ff00ffL))
 # define HEXBASE		"0123456789abcdef"
-
-typedef t_sha256_context t_sha224_context;
 
 typedef struct		s_md5_context
 {
@@ -99,7 +97,8 @@ void				md5(char *msg, t_flags flags, char *filename);
 void				print_md5(t_md5_context c, t_flags flags, char *filename);
 
 void				sha256(char *msg, t_flags flags, char *filename);
-void				print_sha256(t_sha256_context c, t_flags fl, char *f);
+void				print_sha256(t_sha256_context c, t_flags flags, char *f, char *str);
+void				sha224(char *msg, t_flags flags, char *filename);
 
 void				sha512(char *msg, t_flags flags, char *filename);
 void				print_sha512(t_sha512_context c, t_flags flags, char *f);
@@ -117,4 +116,9 @@ void				file_error(char *cmd, char *str);
 void				cmd_error(t_hash_functions hash[], char *cmd);
 void				s_error(char *cmd);
 void				flag_error(char c, char *cmd);
+
+/**
+ * hash_sha2_256.c
+ */
+void				hash_sha_256(t_sha256_context *c, uint8_t **new_msg, size_t len, const uint32_t k[]);
 #endif

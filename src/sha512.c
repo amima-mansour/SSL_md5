@@ -43,125 +43,17 @@ static	void				init_sha512(t_sha512_context *c)
     c->state[6] = 0x1F83D9ABFB41BD6B;
     c->state[7] = 0x5BE0CD19137E2179;
 }
-/*static  void                P(t_sha512_context *c, uint64_t k, uint64_t x, int j)
-{
-    uint64_t    temp1;
-    uint64_t    temp2;
-
-    temp1 = c->var[(j + 7) % 8] + S3(c->var[(4 + j) % 8]) + F1(c->var[(4 + j) % 8], c->var[(5 + j) % 8],
-        c->var[(6 + j) % 8]) + k + x;
-    temp2 = S2(c->var[j % 8]) + F0(c->var[j % 8], c->var[(1 + j) % 8], c->var[(2 + j) % 8]);
-    c->var[(3 + j) % 8] += temp1;
-    c->var[(7 + j) % 8] = temp1 + temp2;
-}
-*/
-// static void                 put_uint64_be(uint64_t n, unsigned char *b, int i)
-// {
-//     b[i] = (unsigned char)(n >> 56);
-//     b[i + 1] = (unsigned char)(n >> 48);
-//     b[i + 2] = (unsigned char)(n >> 40);
-//     b[i + 3] = (unsigned char)(n >> 32);
-//     b[i + 4] = (unsigned char)(n >> 24);
-//     b[i + 5] = (unsigned char)(n >> 16);
-//     b[i + 6] = (unsigned char)(n >> 8);
-//     b[i + 7] = (unsigned char)n;
-// }
-
-static	void				round_sha512(t_sha512_context *ctx, uint64_t *w)
-{
-    int i;
-    int j;
-
-	i = -1;
-	while (++i < 80)
-	{
-		ctx->t1 = ctx->var[7] + SIGMA1(ctx->var[4]) + CH(ctx->var[4],
-				ctx->var[5], ctx->var[6]) + g_k[i] + w[i];
-		ctx->t2 = SIGMA0(ctx->var[0]) + MAJ(ctx->var[0], ctx->var[1],
-				ctx->var[2]);
-        ctx->var[7] = ctx->var[6];
-		ctx->var[6] = ctx->var[5];
-		ctx->var[5] = ctx->var[4];
-		ctx->var[4] = ctx->var[3] + ctx->t1;
-		ctx->var[3] = ctx->var[2];
-		ctx->var[2] = ctx->var[1];
-		ctx->var[1] = ctx->var[0];
-		ctx->var[0] = ctx->t1 + ctx->t2;
-        j = -1;
-        // if  (i == 1)
-        // {
-        //     printf("i = %u, ", i);
-        //     while (++j < 8)
-        //         printf("%u = %llx, ", j, ctx->var[j]);
-        //     printf("\n");
-        // }
-    }
-}
-
-static  uint64_t            byteswap64(uint64_t x)
-{
-    uint32_t a;
-    uint32_t b;
-    a = x >> 32;
-    b = (uint32_t) x;
-    return ((uint64_t) BYTESWAP(b) << 32) | (uint64_t) BYTESWAP(a);
-}
-static	void				subtreat_sha512(t_sha512_context *ctx, uint64_t *w)
-{
-	uint32_t i;
-	uint32_t j;
-	uint64_t m[80];
-
-	i = -1;
-	j = 0;
-	while (++i < 16)
-        m[i] = byteswap64(w[i]);
-	i--;
-	while (++i < 80)
-		m[i] = S1(m[i - 2]) + m[i - 7] + S0(m[i - 15]) + m[i - 16];
-    i = -1;
-	while (++i < 8)
-		ctx->var[i] = ctx->state[i];
-	round_sha512(ctx, m);
-    i = -1;
-	while (++i < 8)
-		ctx->state[i] += ctx->var[i];
-}
-
-static	void				add_len(uint8_t **msg, uint64_t bits, uint64_t len)
-{
-    int i;
-
-    i = -1;
-    while (++i < 8)
-        (*msg)[len + i] = 0;
-    (*msg)[len + 15] = bits;
-	(*msg)[len + 14] = bits >> 8;
-	(*msg)[len + 13] = bits >> 16;
-	(*msg)[len + 12] = bits >> 24;
-	(*msg)[len + 11] = bits >> 32;
-	(*msg)[len + 10] = bits >> 40;
-	(*msg)[len + 9] = bits >> 48;
-    (*msg)[len + 8] = bits >> 56;
-}
 
 void						sha512(char *msg, t_flags flags, char *filename)
 {
-	uint32_t			offset;
 	t_sha512_context		c;
 	uint8_t				*new_msg;
 
 	init_sha512(&c);
 	if ((c.len = prepare_msg_sha512(msg, &new_msg)))
 	{
-		add_len(&new_msg, ft_strlen(msg) * 8, c.len);
-		offset = 0;
-		while (offset < c.len)
-		{
-            subtreat_sha512(&c, (uint64_t*)(new_msg + offset));
-            offset += 128;
-		}
+		hash_sha_512(&c, &new_msg, ft_strlen(msg), g_k);
 		free(new_msg);
-		print_sha512(c, flags, filename);
+		print_sha512(c, flags, filename, "SHA512");
 	}
 }

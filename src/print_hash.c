@@ -37,6 +37,25 @@ static	char	*str_msg_md5(t_md5_context c)
 	return (str);
 }
 
+static	char	*str_msg_sha224(t_sha256_context c)
+{
+	char	hash[29];
+	char	*s;
+	int		i;
+
+	i = -1;
+	while (++i < 28)
+		hash[i] = (c.state[i / 4] >> (( 3 - (i % 4)) * 8)) & 0xFF;
+	hash[i] = '\0';
+	if (!(s = (char*)malloc(57)))
+		return (NULL);
+	s[56] = '\0';
+	i = -1;
+	while (++i < 28)
+		convert_to_hex(hash[i], s + 2 * i);
+	return (s);
+}
+
 static	char	*str_msg_sha256(t_sha256_context c)
 {
 	char	hash[33];
@@ -117,14 +136,17 @@ void			print_hash(char *s, t_flags flags, char *filename, char *cmd)
 	ft_putstr("\n");
 }
 
-void			print_sha256(t_sha256_context c, t_flags flags, char *f)
+void			print_sha256(t_sha256_context c, t_flags flags, char *f, char *str)
 {
 	char *s;
 
-	s = str_msg_sha256(c);
+	if (ft_strcmp(str, "SHA256") == 0)
+		s = str_msg_sha256(c);
+	else
+		s = str_msg_sha224(c);
 	if (s)
 	{
-		print_hash(s, flags, f, "SHA256");
+		print_hash(s, flags, f, str);
 		free(s);
 	}
 }

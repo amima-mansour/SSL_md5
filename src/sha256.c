@@ -45,82 +45,17 @@ static	void				init_sha256(t_sha256_context *c)
 	c->state[7] = 0x5be0cd19;
 }
 
-static	void				add_len(uint8_t **msg, size_t bits, uint32_t len)
-{
-	(*msg)[len + 7] = bits;
-	(*msg)[len + 6] = bits >> 8;
-	(*msg)[len + 5] = bits >> 16;
-	(*msg)[len + 4] = bits >> 24;
-	(*msg)[len + 3] = bits >> 32;
-	(*msg)[len + 2] = bits >> 40;
-	(*msg)[len + 1] = bits >> 48;
-	(*msg)[len] = bits >> 56;
-}
-
-static	void				round_sha256(t_sha256_context *ctx, uint32_t *m)
-{
-	uint32_t i;
-
-	i = -1;
-	while (++i < 64)
-	{
-		ctx->t1 = ctx->var[7] + EP1(ctx->var[4]) + CH(ctx->var[4],
-				ctx->var[5], ctx->var[6]) + g_k[i] + m[i];
-		ctx->t2 = EP0(ctx->var[0]) + MAJ(ctx->var[0], ctx->var[1],
-				ctx->var[2]);
-		ctx->var[7] = ctx->var[6];
-		ctx->var[6] = ctx->var[5];
-		ctx->var[5] = ctx->var[4];
-		ctx->var[4] = ctx->var[3] + ctx->t1;
-		ctx->var[3] = ctx->var[2];
-		ctx->var[2] = ctx->var[1];
-		ctx->var[1] = ctx->var[0];
-		ctx->var[0] = ctx->t1 + ctx->t2;
-	}
-}
-
-static	void				subtreat_sha256(t_sha256_context *ctx, uint8_t *w)
-{
-	uint32_t i;
-	uint32_t j;
-	uint32_t m[64];
-
-	i = -1;
-	j = 0;
-	while (++i < 16)
-	{
-		m[i] = (w[j] << 24) | (w[j + 1] << 16) | (w[j + 2] << 8) | (w[j + 3]);
-		j += 4;
-	}
-	i--;
-	while (++i < 64)
-		m[i] = SIG1(m[i - 2]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
-	i = -1;
-	while (++i < 8)
-		ctx->var[i] = ctx->state[i];
-	round_sha256(ctx, m);
-	i = -1;
-	while (++i < 8)
-		ctx->state[i] += ctx->var[i];
-}
 
 void						sha256(char *msg, t_flags flags, char *filename)
 {
-	uint32_t			offset;
 	t_sha256_context		c;
 	uint8_t				*new_msg;
 
 	init_sha256(&c);
 	if ((c.len = prepare_msg(msg, &new_msg)))
 	{
-		add_len(&new_msg, ft_strlen(msg) * 8, c.len);
-		offset = 0;
-		while (offset < c.len)
-		{
-			subtreat_sha256(&c, (uint8_t*)(new_msg + offset));
-			offset += 64;
-		}
+		hash_sha_256(&c, &new_msg, ft_strlen(msg), g_k);
 		free(new_msg);
-		print_sha256(c, flags, filename);
+		print_sha256(c, flags, filename, "SHA256");
 	}
 }
