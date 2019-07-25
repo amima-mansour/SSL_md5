@@ -37,92 +37,41 @@ static	char	*str_msg_md5(t_md5_context c)
 	return (str);
 }
 
-static	char	*str_msg_sha224(t_sha256_context c)
+static	char	*str_msg_sha256_sha224(t_sha256_context c, int digest_len)
 {
-	char	hash[29];
+	char	hash[digest_len + 1];
 	char	*s;
 	int		i;
 
 	i = -1;
-	while (++i < 28)
-		hash[i] = (c.state[i / 4] >> (( 3 - (i % 4)) * 8)) & 0xFF;
+	while (++i < digest_len)
+		hash[i] = (c.state[i / WORD] >> (( WORD - 1 - (i % WORD)) * 8)) & 0xFF;
 	hash[i] = '\0';
-	if (!(s = (char*)malloc(57)))
+	if (!(s = (char*)malloc(digest_len * 2 + 1)))
 		return (NULL);
-	s[56] = '\0';
+	s[digest_len * 2] = '\0';
 	i = -1;
-	while (++i < 28)
+	while (++i < digest_len)
 		convert_to_hex(hash[i], s + 2 * i);
 	return (s);
 }
 
-static	char	*str_msg_sha256(t_sha256_context c)
+static	char	*str_msg_sha512_sha384(t_sha512_context c, int digest_len)
 {
-	char	hash[33];
+	char	hash[digest_len + 1];
 	char	*s;
 	int		i;
 
 	i = -1;
-	while (++i < 4)
-	{
-		hash[i] = (c.state[0] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 4] = (c.state[1] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 8] = (c.state[2] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 12] = (c.state[3] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 16] = (c.state[4] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 20] = (c.state[5] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 24] = (c.state[6] >> (24 - i * 8)) & 0x000000ff;
-		hash[i + 28] = (c.state[7] >> (24 - i * 8)) & 0x000000ff;
-	}
-	hash[32] = '\0';
-	if (!(s = (char*)malloc(65)))
+	while (++i  < digest_len)
+		hash[i] = (c.state[i / WORD_64] >> ((WORD_64 - 1 - (i % WORD_64)) * 8)) & 0xFF;
+	hash[digest_len] = '\0';
+	i = -1;
+	if (!(s = (char*)malloc(2 * digest_len + 1)))
 		return (NULL);
-	s[64] = '\0';
+	s[2 * digest_len] = '\0';
 	i = -1;
-	while (++i < 32)
-		convert_to_hex(hash[i], s + 2 * i);
-	return (s);
-}
-
-static	char	*str_msg_sha512(t_sha512_context c)
-{
-	char	hash[65];
-	char	*s;
-	int		i;
-
-	i = -1;
-	/* copy output */
-    // for (i = 0; i < DIGEST_SIZE; i++)
-    //     hash[i] = (hs->state[i / WORD_SIZE] >> 
-    //                ((WORD_SIZE - 1 - (i % WORD_SIZE)) * 8)) & 0xFF;
-	while (++i  < 64)
-		hash[i] = (c.state[i / 8] >> ((7 - (i % 8)) * 8)) & 0xFF;
-	hash[64] = '\0';
-	i = -1;
-	if (!(s = (char*)malloc(129)))
-		return (NULL);
-	s[128] = '\0';
-	i = -1;
-	while (++i < 64)
-		convert_to_hex(hash[i], s + 2 * i);
-	return (s);
-}
-
-static	char	*str_msg_sha384(t_sha512_context c)
-{
-	char	hash[49];
-	char	*s;
-	int		i;
-
-	i = -1;
-  	while (++i  < 48)
-		hash[i] = (c.state[i / 8] >> ((7 - (i % 8)) * 8)) & 0xFF;
-	hash[48] = '\0';
-	if (!(s = (char*)malloc(97)))
-		return (NULL);
-	s[98] = '\0';
-	i = -1;
-	while (++i < 48)
+	while (++i < digest_len)
 		convert_to_hex(hash[i], s + 2 * i);
 	return (s);
 }
@@ -154,9 +103,9 @@ void			print_sha256(t_sha256_context c, t_flags flags, char *f, char *str)
 	char *s;
 
 	if (ft_strcmp(str, "SHA256") == 0)
-		s = str_msg_sha256(c);
+		s = str_msg_sha256_sha224(c, 32);
 	else
-		s = str_msg_sha224(c);
+		s = str_msg_sha256_sha224(c, 28);
 	if (s)
 	{
 		print_hash(s, flags, f, str);
@@ -181,9 +130,9 @@ void			print_sha512(t_sha512_context c, t_flags flags, char *f, char *str)
 	char *s;
 
 	if (ft_strcmp(str, "SHA512") == 0)
-		s = str_msg_sha512(c);
+		s = str_msg_sha512_sha384(c, 64);
 	else
-		s = str_msg_sha384(c);
+		s = str_msg_sha512_sha384(c, 48);
 	if (s)
 	{
 		print_hash(s, flags, f, str);

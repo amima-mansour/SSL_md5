@@ -22,6 +22,8 @@
 
 # define NB_FUNCTIONS	5
 # define BUF			10000
+# define WORD			4
+# define WORD_64		8
 
 # define F(x, y, z)		(((x) & (y)) | ((~x) & (z)))
 # define G(x, y, z)		(((x) & (z)) | ((y) & (~z)))
