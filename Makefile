@@ -22,6 +22,8 @@ SRCS		= $(addprefix $(PATH_SRC)/, \
 							sha224.c\
 							sha512.c\
 							sha384.c\
+							sha512256.c\
+							sha512224.c\
 							print_hash.c\
 							stdin.c\
 							error.c\

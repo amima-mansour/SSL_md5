@@ -20,7 +20,7 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-# define NB_FUNCTIONS	5
+# define NB_FUNCTIONS	7
 # define BUF			10000
 # define WORD			4
 # define WORD_64		8
@@ -111,6 +111,8 @@ void					sha512(char *msg, t_flags flags, char *filename);
 void					print_sha512(t_sha512_context c, t_flags fl, char *f,
 						char *s);
 void					sha384(char *msg, t_flags flags, char *filename);
+void					sha512256(char *msg, t_flags flags, char *filename);
+void					sha512224(char *msg, t_flags flags, char *filename);
 
 char					*str_msg_md5(t_md5_context c);
 char					*str_msg_sha(t_sha256_context *c1, t_sha512_context *c2,

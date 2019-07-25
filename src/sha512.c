@@ -32,8 +32,12 @@ void			print_sha512(t_sha512_context c, t_flags fl, char *f, char *s1)
 
 	if (ft_strcmp(s1, "SHA512") == 0)
 		s = str_msg_sha(NULL, &c, 64, WORD_64);
-	else
+	else if (ft_strcmp(s1, "SHA384") == 0)
 		s = str_msg_sha(NULL, &c, 48, WORD_64);
+	else if (ft_strcmp(s1, "SHA512224") == 0)
+		s = str_msg_sha(NULL, &c, 28, WORD_64);
+	else
+		s = str_msg_sha(NULL, &c, 32, WORD_64);
 	if (s)
 	{
 		print_hash(s, fl, f, s1);
