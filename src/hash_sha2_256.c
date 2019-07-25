@@ -1,7 +1,7 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static const uint32_t g_k[64] = {
+static const U32 g_k[64] = {
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b,
     0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01,
     0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7,
@@ -17,7 +17,7 @@ static const uint32_t g_k[64] = {
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static void			        add_len(uint8_t **msg, size_t bits, uint32_t len)
+static void			        add_len(U8 **msg, size_t bits, U32 len)
 {
 	(*msg)[len + 7] = bits;
 	(*msg)[len + 6] = bits >> 8;
@@ -29,9 +29,9 @@ static void			        add_len(uint8_t **msg, size_t bits, uint32_t len)
 	(*msg)[len] = bits >> 56;
 }
 
-static	void				round_sha256(t_sha256_context *ctx, uint32_t *m)
+static	void				round_sha256(t_sha256_context *ctx, U32 *m)
 {
-	uint32_t i;
+	U32 i;
 
 	i = -1;
 	while (++i < 64)
@@ -51,19 +51,19 @@ static	void				round_sha256(t_sha256_context *ctx, uint32_t *m)
 	}
 }
 
-static	void				subtreat_sha256(t_sha256_context *ctx, uint8_t *w)
+static	void				subtreat_sha256(t_sha256_context *ctx, U8 *w)
 {
-	uint32_t i;
-	uint32_t j;
-	uint32_t m[64];
+	U32 i;
+	U32 j;
+	U32 m[64];
 
 	i = -1;
 	j = 0;
-	while (++i < 16)
-	{
-		m[i] = (w[j] << 24) | (w[j + 1] << 16) | (w[j + 2] << 8) | (w[j + 3]);
-		j += 4;
-	}
+	while(++i < 16)
+        m[i] = (((U32) w[WORD * i]) << (WORD_BITS - 8)) |
+				(((U32) w[WORD * i + 1]) << (WORD_BITS - 16)) |
+            	(((U32) w[WORD * i + 2]) << (WORD_BITS - 24)) |
+            	(((U32) w[WORD * i + 3]) << (WORD_BITS - 32));
 	i--;
 	while (++i < 64)
 		m[i] = SIG1(m[i - 2]) + m[i - 7] + SIG0(m[i - 15]) + m[i - 16];
@@ -76,15 +76,15 @@ static	void				subtreat_sha256(t_sha256_context *ctx, uint8_t *w)
 		ctx->state[i] += ctx->var[i];
 }
 
-void		hash_sha_256(t_sha256_context *c, uint8_t **new_msg, size_t len)
+void		hash_sha_256(t_sha256_context *c, U8 **new_msg, size_t len)
 {
-	uint32_t offset;
+	U32 offset;
 
 	offset = 0;
     add_len(new_msg, len * 8, c->len);
 	while (offset < c->len)
 	{
-		subtreat_sha256(c, (uint8_t*)(*new_msg + offset));
+		subtreat_sha256(c, (U8*)(*new_msg + offset));
 		offset += 64;
 	}
 }

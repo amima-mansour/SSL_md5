@@ -24,6 +24,11 @@
 # define BUF			10000
 # define WORD			4
 # define WORD_64		8
+# define WORD_64_BITS	64
+# define WORD_BITS		32
+typedef uint8_t			U8;
+typedef uint32_t		U32;
+typedef uint64_t		U64;
 
 # define F(x, y, z)		(((x) & (y)) | ((~x) & (z)))
 # define G(x, y, z)		(((x) & (z)) | ((y) & (~z)))
@@ -106,8 +111,8 @@ void				sha512(char *msg, t_flags flags, char *filename);
 void				print_sha512(t_sha512_context c, t_flags flags, char *f, char *s);
 void				sha384(char *msg, t_flags flags, char *filename);
 
-uint32_t			prepare_msg(char *msg, uint8_t **new_msg);
-uint64_t			prepare_msg_sha512(char *msg, uint8_t **new_msg);
+U32					prepare_msg(char *msg, U8 **new_msg);
+U64					prepare_msg_sha512(char *msg, U8 **new_msg);
 void				init_flags(t_flags *flags);
 int					flags_check(char **argv, int argc, t_flags *flags, int s);
 void				(*cmd_check(char *cmd))(char*, t_flags, char*);

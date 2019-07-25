@@ -1,7 +1,7 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static const uint64_t g_k[80] = {
+static const U64 g_k[80] = {
     0x428A2F98D728AE22, 0x7137449123EF65CD, 0xB5C0FBCFEC4D3B2F,
     0xE9B5DBA58189DBBC, 0x3956C25BF348B538, 0x59F111F1B605D019,
     0x923F82A4AF194F9B, 0xAB1C5ED5DA6D8118, 0xD807AA98A3030242,
@@ -31,7 +31,7 @@ static const uint64_t g_k[80] = {
     0x5FCB6FAB3AD6FAEC, 0x6C44198C4A475817
 };
 
-static	void				round_sha512(t_sha512_context *ctx, uint64_t *w)
+static	void				round_sha512(t_sha512_context *ctx, U64 *w)
 {
     int i;
 
@@ -53,26 +53,21 @@ static	void				round_sha512(t_sha512_context *ctx, uint64_t *w)
     }
 }
 
-static  uint64_t            byteswap64(uint64_t x)
-{
-    uint32_t a;
-    uint32_t b;
-
-    a = x >> 32;
-    b = (uint32_t) x;
-    return ((uint64_t) BYTESWAP(b) << 32) | (uint64_t) BYTESWAP(a);
-}
-
-static	void				subtreat_sha512(t_sha512_context *ctx, uint64_t *w)
+static	void				subtreat_sha512(t_sha512_context *ctx, U8 *w)
 {
 	uint32_t i;
-	uint32_t j;
-	uint64_t m[80];
+	U64 m[80];
 
 	i = -1;
-	j = 0;
-	while (++i < 16)
-        m[i] = byteswap64(w[i]);
+	while(++i < 16)
+        m[i] = (((U64) w[WORD_64 * i]) << (WORD_64_BITS - 8)) |
+				(((U64) w[WORD_64 * i + 1]) << (WORD_64_BITS - 16)) |
+            	(((U64) w[WORD_64 * i + 2]) << (WORD_64_BITS - 24)) |
+            	(((U64) w[WORD_64 * i + 3]) << (WORD_64_BITS - 32)) |
+            	(((U64) w[WORD_64 * i + 4]) << (WORD_64_BITS-40)) |
+            	(((U64) w[WORD_64 * i + 5]) << (WORD_64_BITS-48)) |
+            	(((U64) w[WORD_64 * i + 6]) << (WORD_64_BITS-56)) |
+            	(((U64) w[WORD_64 * i + 7]));
 	i--;
 	while (++i < 80)
 		m[i] = S1(m[i - 2]) + m[i - 7] + S0(m[i - 15]) + m[i - 16];
@@ -85,7 +80,7 @@ static	void				subtreat_sha512(t_sha512_context *ctx, uint64_t *w)
 		ctx->state[i] += ctx->var[i];
 }
 
-static	void				add_len(uint8_t **msg, uint64_t bits, uint64_t len)
+static	void				add_len(U8 **msg, U64 bits, U64 len)
 {
     int i;
 
@@ -102,7 +97,7 @@ static	void				add_len(uint8_t **msg, uint64_t bits, uint64_t len)
     (*msg)[len + 8] = bits >> 56;
 }
 
-void		hash_sha_512(t_sha512_context *c, uint8_t **new_msg, size_t len)
+void		hash_sha_512(t_sha512_context *c, U8 **new_msg, size_t len)
 {
 	uint32_t offset;
 
@@ -111,7 +106,7 @@ void		hash_sha_512(t_sha512_context *c, uint8_t **new_msg, size_t len)
 	offset = 0;
 	while (offset < c->len)
 	{
-		subtreat_sha512(c, (uint64_t*)(*new_msg + offset));
+		subtreat_sha512(c, (U8*)(*new_msg + offset));
 		offset += 128;
 	}
 }

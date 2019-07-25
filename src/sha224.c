@@ -16,7 +16,7 @@ static void init_sha224( t_sha256_context *context)
 void		sha224(char *msg, t_flags flags, char *filename)
 {
 	t_sha256_context	c;
-	uint8_t				*new_msg;
+	U8				    *new_msg;
 
 	init_sha224(&c);
 	if ((c.len = prepare_msg(msg, &new_msg)))

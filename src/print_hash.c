@@ -15,7 +15,7 @@
 
 static	char	*str_msg_md5(t_md5_context c)
 {
-	uint8_t		*p;
+	U8	*p;
 	int			i;
 	char		*str;
 	int			j;
@@ -26,7 +26,7 @@ static	char	*str_msg_md5(t_md5_context c)
 		return (NULL);
 	while (++i < 4)
 	{
-		p = (uint8_t *)&(c.state[i]);
+		p = (U8 *)&(c.state[i]);
 		convert_to_hex((char)p[0], str + j);
 		convert_to_hex((char)p[1], str + j + 2);
 		convert_to_hex((char)p[2], str + j + 4);

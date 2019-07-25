@@ -17,7 +17,7 @@ static	void				init_sha384(t_sha512_context *c)
 void						sha384(char *msg, t_flags flags, char *filename)
 {
 	t_sha512_context	c;
-	uint8_t				*new_msg;
+	U8					*new_msg;
 
 	init_sha384(&c);
 	if ((c.len = prepare_msg_sha512(msg, &new_msg)))

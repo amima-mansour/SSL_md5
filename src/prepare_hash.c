@@ -13,10 +13,10 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-uint64_t	prepare_msg_sha512(char *msg, uint8_t **new_msg)
+U64	prepare_msg_sha512(char *msg, U8 **new_msg)
 {
 	size_t		len;
-	uint64_t	new_len;
+	U64	new_len;
 
 	len = ft_strlen(msg);
 	new_len = len * 8 + 1;
@@ -30,7 +30,7 @@ uint64_t	prepare_msg_sha512(char *msg, uint8_t **new_msg)
 	return (new_len);
 }
 
-uint32_t	prepare_msg(char *msg, uint8_t **new_msg)
+U32	prepare_msg(char *msg, U8 **new_msg)
 {
 	size_t		len;
 	int			new_len;

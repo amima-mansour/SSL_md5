@@ -17,7 +17,7 @@ static	void				init_sha512(t_sha512_context *c)
 void						sha512(char *msg, t_flags flags, char *filename)
 {
 	t_sha512_context		c;
-	uint8_t				*new_msg;
+	U8						*new_msg;
 
 	init_sha512(&c);
 	if ((c.len = prepare_msg_sha512(msg, &new_msg)))

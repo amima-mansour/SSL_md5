@@ -13,14 +13,14 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static	const	uint32_t	g_s[] = {
+static	const	U32	g_s[] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
 	22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16,
 	23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15,
 	21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-static	const	uint32_t	g_t[] = {
+static	const	U32	g_t[] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -49,9 +49,9 @@ static	void				init_md5(t_md5_context *context)
 }
 
 static	void				put_in_variable(t_md5_context *c,
-			uint32_t f, uint32_t w, uint32_t i)
+			U32 f, U32 w, U32 i)
 {
-	uint32_t temp;
+	U32 temp;
 
 	temp = c->var[3];
 	c->var[3] = c->var[2];
@@ -60,10 +60,10 @@ static	void				put_in_variable(t_md5_context *c,
 	c->var[0] = temp;
 }
 
-static	void				subtreat_md5(t_md5_context *c, uint32_t *w)
+static	void				subtreat_md5(t_md5_context *c, U32 *w)
 {
-	uint32_t i;
-	uint32_t g;
+	U32 i;
+	U32 g;
 
 	i = -1;
 	while (++i < 16)
@@ -87,10 +87,10 @@ static	void				subtreat_md5(t_md5_context *c, uint32_t *w)
 
 void						md5(char *msg, t_flags flags, char *filename)
 {
-	uint32_t		offset;
+	U32		offset;
 	t_md5_context	c;
-	uint8_t			*new_msg;
-	uint32_t		len_bits;
+	U8			*new_msg;
+	U32		len_bits;
 
 	init_md5(&c);
 	len_bits = ft_strlen(msg) * 8;
@@ -103,7 +103,7 @@ void						md5(char *msg, t_flags flags, char *filename)
 			c.i = -1;
 			while (++(c.i) < 4)
 				c.var[c.i] = c.state[c.i];
-			subtreat_md5(&c, (uint32_t *)(new_msg + offset));
+			subtreat_md5(&c, (U32 *)(new_msg + offset));
 			offset += 64;
 			c.i = -1;
 			while (++(c.i) < 4)
