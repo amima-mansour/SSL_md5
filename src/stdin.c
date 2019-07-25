@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   stdin.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/07/25 10:01:18 by amansour          #+#    #+#             */
+/*   Updated: 2019/07/25 10:01:32 by amansour         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
@@ -23,7 +35,7 @@ void		read_stdin(char **str)
 		}
 		buf[i++ % BUF] = ch;
 	}
-    temp = ft_strjoin(*str, buf);
+	temp = ft_strjoin(*str, buf);
 	buf ? free(buf) : 0;
 	*str ? free(*str) : 0;
 	*str = temp;

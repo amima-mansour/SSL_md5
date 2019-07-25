@@ -6,14 +6,14 @@
 /*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 13:48:17 by amansour          #+#    #+#             */
-/*   Updated: 2019/07/22 13:58:57 by amansour         ###   ########.fr       */
+/*   Updated: 2019/07/25 10:27:49 by amansour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static	void				init_sha256(t_sha256_context *c)
+static	void	init_sha256(t_sha256_context *c)
 {
 	c->len = 0;
 	c->state[0] = 0x6a09e667;
@@ -26,11 +26,25 @@ static	void				init_sha256(t_sha256_context *c)
 	c->state[7] = 0x5be0cd19;
 }
 
+void			print_sha256(t_sha256_context c, t_flags fl, char *f, char *s1)
+{
+	char *s;
 
-void						sha256(char *msg, t_flags flags, char *filename)
+	if (ft_strcmp(s1, "SHA256") == 0)
+		s = str_msg_sha(&c, NULL, 32, WORD);
+	else
+		s = str_msg_sha(&c, NULL, 28, WORD);
+	if (s)
+	{
+		print_hash(s, fl, f, s1);
+		free(s);
+	}
+}
+
+void			sha256(char *msg, t_flags flags, char *filename)
 {
 	t_sha256_context		c;
-	U8						*new_msg;
+	t_u8					*new_msg;
 
 	init_sha256(&c);
 	if ((c.len = prepare_msg(msg, &new_msg)))

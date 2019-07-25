@@ -6,21 +6,21 @@
 /*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 14:08:53 by amansour          #+#    #+#             */
-/*   Updated: 2019/07/22 14:22:07 by amansour         ###   ########.fr       */
+/*   Updated: 2019/07/25 09:43:41 by amansour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-static	const	U32	g_s[] = {
+static	const	t_u32	g_s[] = {
 	7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17,
 	22, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 4, 11, 16,
 	23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 6, 10, 15, 21, 6, 10, 15,
 	21, 6, 10, 15, 21, 6, 10, 15, 21
 };
 
-static	const	U32	g_t[] = {
+static	const	t_u32	g_t[] = {
 	0xd76aa478, 0xe8c7b756, 0x242070db, 0xc1bdceee,
 	0xf57c0faf, 0x4787c62a, 0xa8304613, 0xfd469501,
 	0x698098d8, 0x8b44f7af, 0xffff5bb1, 0x895cd7be,
@@ -39,6 +39,18 @@ static	const	U32	g_t[] = {
 	0xf7537e82, 0xbd3af235, 0x2ad7d2bb, 0xeb86d391
 };
 
+void						print_md5(t_md5_context c, t_flags flags, char *f)
+{
+	char *s;
+
+	s = str_msg_md5(c);
+	if (s)
+	{
+		print_hash(s, flags, f, "MD5");
+		free(s);
+	}
+}
+
 static	void				init_md5(t_md5_context *context)
 {
 	context->state[0] = 0x67452301;
@@ -49,9 +61,9 @@ static	void				init_md5(t_md5_context *context)
 }
 
 static	void				put_in_variable(t_md5_context *c,
-			U32 f, U32 w, U32 i)
+			t_u32 f, t_u32 w, t_u32 i)
 {
-	U32 temp;
+	t_u32 temp;
 
 	temp = c->var[3];
 	c->var[3] = c->var[2];
@@ -60,10 +72,10 @@ static	void				put_in_variable(t_md5_context *c,
 	c->var[0] = temp;
 }
 
-static	void				subtreat_md5(t_md5_context *c, U32 *w)
+static	void				subtreat_md5(t_md5_context *c, t_u32 *w)
 {
-	U32 i;
-	U32 g;
+	t_u32 i;
+	t_u32 g;
 
 	i = -1;
 	while (++i < 16)
@@ -87,10 +99,10 @@ static	void				subtreat_md5(t_md5_context *c, U32 *w)
 
 void						md5(char *msg, t_flags flags, char *filename)
 {
-	U32		offset;
-	t_md5_context	c;
-	U8			*new_msg;
-	U32		len_bits;
+	t_u32				offset;
+	t_md5_context		c;
+	t_u8				*new_msg;
+	t_u32				len_bits;
 
 	init_md5(&c);
 	len_bits = ft_strlen(msg) * 8;
@@ -103,7 +115,7 @@ void						md5(char *msg, t_flags flags, char *filename)
 			c.i = -1;
 			while (++(c.i) < 4)
 				c.var[c.i] = c.state[c.i];
-			subtreat_md5(&c, (U32 *)(new_msg + offset));
+			subtreat_md5(&c, (t_u32 *)(new_msg + offset));
 			offset += 64;
 			c.i = -1;
 			while (++(c.i) < 4)

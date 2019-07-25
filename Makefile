@@ -16,6 +16,7 @@
 
 SRCS		= $(addprefix $(PATH_SRC)/, \
 							main.c\
+							check.c\
 							md5.c\
 							sha256.c\
 							sha224.c\
