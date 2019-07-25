@@ -34,18 +34,10 @@ static const uint64_t g_k[80] = {
 static	void				round_sha512(t_sha512_context *ctx, uint64_t *w)
 {
     int i;
-	int j;
 
 	i = -1;
 	while (++i < 80)
 	{
-		j = -1;
-		if (i == 1)
-		{
-			while(++j < 8)
-				printf("%d => %llx ", i, ctx->var[j]);
-			printf("\n");
-		}
 		ctx->t1 = ctx->var[7] + SIGMA1(ctx->var[4]) + CH(ctx->var[4],
 				ctx->var[5], ctx->var[6]) + g_k[i] + w[i];
 		ctx->t2 = SIGMA0(ctx->var[0]) + MAJ(ctx->var[0], ctx->var[1],
@@ -58,13 +50,6 @@ static	void				round_sha512(t_sha512_context *ctx, uint64_t *w)
 		ctx->var[2] = ctx->var[1];
 		ctx->var[1] = ctx->var[0];
 		ctx->var[0] = ctx->t1 + ctx->t2;
-		j  = -1;
-		if (i == 1)
-		{
-			while(++j < 8)
-				printf("%d => %llx ", i, ctx->var[j]);
-			printf("\n");
-		}
     }
 }
 
@@ -78,7 +63,7 @@ static  uint64_t            byteswap64(uint64_t x)
     return ((uint64_t) BYTESWAP(b) << 32) | (uint64_t) BYTESWAP(a);
 }
 
-static	void				subtreat_sha512(t_sha512_context *ctx, uint8_t *w)
+static	void				subtreat_sha512(t_sha512_context *ctx, uint64_t *w)
 {
 	uint32_t i;
 	uint32_t j;
@@ -123,13 +108,10 @@ void		hash_sha_512(t_sha512_context *c, uint8_t **new_msg, size_t len)
 
 	offset = -1;
     add_len(new_msg, len * 8, c->len);
-	while(++offset < 128)
-		printf("%x", (*new_msg)[offset]);
-	printf("\n");
 	offset = 0;
 	while (offset < c->len)
 	{
-		subtreat_sha512(c, (uint8_t*)(*new_msg + offset));
+		subtreat_sha512(c, (uint64_t*)(*new_msg + offset));
 		offset += 128;
 	}
 }
