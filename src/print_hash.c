@@ -37,41 +37,26 @@ static	char	*str_msg_md5(t_md5_context c)
 	return (str);
 }
 
-static	char	*str_msg_sha256_sha224(t_sha256_context c, int digest_len)
+static	char	*str_msg_sha(t_sha256_context *c1, t_sha512_context *c2, int d, int w)
 {
-	char	hash[digest_len + 1];
+	char	hash[d + 1];
 	char	*s;
 	int		i;
 
 	i = -1;
-	while (++i < digest_len)
-		hash[i] = (c.state[i / WORD] >> (( WORD - 1 - (i % WORD)) * 8)) & 0xFF;
-	hash[i] = '\0';
-	if (!(s = (char*)malloc(digest_len * 2 + 1)))
+	if (c1)
+		while (++i  < d)
+			hash[i] = (c1->state[i / w] >> ((w - 1 - (i % w)) * 8)) & 0xFF;
+	else
+		while (++i  < d)
+			hash[i] = (c2->state[i / w] >> ((w - 1 - (i % w)) * 8)) & 0xFF;
+	hash[d] = '\0';
+	i = -1;
+	if (!(s = (char*)malloc(2 * d + 1)))
 		return (NULL);
-	s[digest_len * 2] = '\0';
+	s[2 * d] = '\0';
 	i = -1;
-	while (++i < digest_len)
-		convert_to_hex(hash[i], s + 2 * i);
-	return (s);
-}
-
-static	char	*str_msg_sha512_sha384(t_sha512_context c, int digest_len)
-{
-	char	hash[digest_len + 1];
-	char	*s;
-	int		i;
-
-	i = -1;
-	while (++i  < digest_len)
-		hash[i] = (c.state[i / WORD_64] >> ((WORD_64 - 1 - (i % WORD_64)) * 8)) & 0xFF;
-	hash[digest_len] = '\0';
-	i = -1;
-	if (!(s = (char*)malloc(2 * digest_len + 1)))
-		return (NULL);
-	s[2 * digest_len] = '\0';
-	i = -1;
-	while (++i < digest_len)
+	while (++i < d)
 		convert_to_hex(hash[i], s + 2 * i);
 	return (s);
 }
@@ -103,9 +88,9 @@ void			print_sha256(t_sha256_context c, t_flags flags, char *f, char *str)
 	char *s;
 
 	if (ft_strcmp(str, "SHA256") == 0)
-		s = str_msg_sha256_sha224(c, 32);
+		s = str_msg_sha(&c, NULL, 32, WORD);
 	else
-		s = str_msg_sha256_sha224(c, 28);
+		s = str_msg_sha(&c, NULL, 28, WORD);
 	if (s)
 	{
 		print_hash(s, flags, f, str);
@@ -130,9 +115,9 @@ void			print_sha512(t_sha512_context c, t_flags flags, char *f, char *str)
 	char *s;
 
 	if (ft_strcmp(str, "SHA512") == 0)
-		s = str_msg_sha512_sha384(c, 64);
+		s = str_msg_sha(NULL, &c, 64, WORD_64);
 	else
-		s = str_msg_sha512_sha384(c, 48);
+		s = str_msg_sha(NULL, &c, 48, WORD_64);
 	if (s)
 	{
 		print_hash(s, flags, f, str);
