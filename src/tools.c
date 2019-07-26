@@ -37,7 +37,7 @@ int		ft_strcmp(char const *str1, char const *str2)
 	return (s1[i] - s2[i]);
 }
 
-void	*ft_memcpy(void *dest, const void *src, size_t len)
+void	*ft_memcpy_64(void *dest, const void *src, t_u64 len)
 {
 	char			*d;
 	const	char	*s;
@@ -49,13 +49,42 @@ void	*ft_memcpy(void *dest, const void *src, size_t len)
 	return (dest);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*ft_calloc(t_u64 nmemb, size_t size)
 {
 	void	*block;
 
-	if ((int)nmemb < 0 || (int)size < 0)
-		return (NULL);
 	if ((block = malloc(nmemb * size)))
 		ft_bzero(block, nmemb * size);
 	return (block);
+}
+
+char	*ft_strjoin_s(char const *s1, char const *s2, t_u64 l)
+{
+	char	*str;
+	t_u64	i;
+	size_t	j;
+	t_u64	limit;
+
+	str = ft_strnew(l);
+	if (str)
+	{
+		i = 0;
+		j = 0;
+		limit = (l / BUF - 1) * BUF; 
+		if (l % BUF != 0)
+			limit = l - l % BUF;
+		while (i < limit)
+		{
+			str[i] = s1[i];
+			++i;
+		}
+		while (i < l)
+		{
+			str[i] = s2[j];
+			++j;
+			++i;
+		}
+		str[l] = '\0';
+	}
+	return (str);
 }

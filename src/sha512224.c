@@ -26,15 +26,15 @@ static	void	init_sha512224(t_sha512_context *c)
 	c->state[7] = 0x1112E6AD91D692A1;
 }
 
-void			sha512224(char *msg, t_flags flags, char *filename)
+void			sha512224(char *msg, t_flags flags, char *filename, t_u64 len)
 {
 	t_sha512_context		c;
 	t_u8					*new_msg;
 
 	init_sha512224(&c);
-	if ((c.len = prepare_msg_sha512(msg, &new_msg)))
+	if ((c.len = prepare_msg_sha512(msg, &new_msg, len)))
 	{
-		hash_sha_512(&c, &new_msg, ft_strlen(msg));
+		hash_sha_512(&c, &new_msg, len);
 		free(new_msg);
 		print_sha512(c, flags, filename, "SHA512224");
 	}

@@ -97,18 +97,18 @@ static	void				subtreat_md5(t_md5_context *c, t_u32 *w)
 	}
 }
 
-void						md5(char *msg, t_flags flags, char *filename)
+void						md5(char *msg, t_flags flags, char *filename, t_u64 l)
 {
-	t_u32				offset;
+	t_u64				offset;
 	t_md5_context		c;
 	t_u8				*new_msg;
-	t_u32				len_bits;
+	t_u64				len_bits;
 
 	init_md5(&c);
-	len_bits = ft_strlen(msg) * 8;
-	if ((c.len = prepare_msg(msg, &new_msg)))
+	len_bits = l * 8;
+	if ((c.len = prepare_msg(msg, &new_msg, l)))
 	{
-		ft_memcpy(new_msg + c.len, &(len_bits), 4);
+		ft_memcpy_64(new_msg + c.len, &(len_bits), 4);
 		offset = 0;
 		while (offset < c.len)
 		{

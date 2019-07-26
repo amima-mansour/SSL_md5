@@ -56,7 +56,7 @@ typedef uint64_t		t_u64;
 typedef struct			s_md5_context
 {
 	uint32_t			state[4];
-	uint32_t			len;
+	uint64_t			len;
 	uint32_t			var[4];
 	uint32_t			i;
 }						t_md5_context;
@@ -64,7 +64,7 @@ typedef struct			s_md5_context
 typedef struct			s_sha256_context
 {
 	uint32_t			state[8];
-	uint32_t			len;
+	uint64_t			len;
 	uint32_t			var[8];
 	uint32_t			t1;
 	uint32_t			t2;
@@ -91,43 +91,44 @@ typedef struct			s_flags
 typedef struct			s_hash_functions
 {
 	char				*name;
-	void				(*f)(char*, t_flags, char*);
+	void				(*f)(char*, t_flags, char*, t_u64);
 }						t_hash_functions;
 
 int						ft_strcmp(char const *str1, char const *str2);
-void					*ft_memcpy (void *dest, const void *src, size_t len);
-void					*ft_calloc(size_t nmemb, size_t size);
+void					*ft_memcpy_64(void *dest, const void *src, t_u64 len);
+void					*ft_calloc(t_u64 nmemb, size_t size);
 void					convert_to_hex(unsigned char nb, char *s);
+char					*ft_strjoin_s(char const *s1, char const *s2, t_u64 l);
 
-void					md5(char *msg, t_flags flags, char *filename);
+void					md5(char *msg, t_flags flags, char *filename, t_u64 l);
 void					print_md5(t_md5_context c, t_flags flags, char *f);
 
-void					sha256(char *msg, t_flags flags, char *filename);
+void					sha256(char *msg, t_flags flags, char *filename, t_u64 l);
 void					print_sha256(t_sha256_context c, t_flags fl, char *f,
 						char *s);
-void					sha224(char *msg, t_flags flags, char *filename);
+void					sha224(char *msg, t_flags flags, char *filename, t_u64 l);
 
-void					sha512(char *msg, t_flags flags, char *filename);
+void					sha512(char *msg, t_flags flags, char *filename, t_u64 l);
 void					print_sha512(t_sha512_context c, t_flags fl, char *f,
 						char *s);
-void					sha384(char *msg, t_flags flags, char *filename);
-void					sha512256(char *msg, t_flags flags, char *filename);
-void					sha512224(char *msg, t_flags flags, char *filename);
+void					sha384(char *msg, t_flags flags, char *filename, t_u64 l);
+void					sha512256(char *msg, t_flags flags, char *filename, t_u64 l);
+void					sha512224(char *msg, t_flags flags, char *filename, t_u64 l);
 
 char					*str_msg_md5(t_md5_context c);
 char					*str_msg_sha(t_sha256_context *c1, t_sha512_context *c2,
 						int d, int w);
 void					print_hash(char *s, t_flags flags, char *f, char *cmd);
 
-t_u32					prepare_msg(char *msg, t_u8 **new_msg);
-t_u64					prepare_msg_sha512(char *msg, t_u8 **new_msg);
+t_u64					prepare_msg(char *msg, t_u8 **new_msg, t_u64 l);
+t_u64					prepare_msg_sha512(char *msg, t_u8 **new_msg, t_u64 l);
 
 void					init_flags(t_flags *flags);
 int						flags_check(char **argv, int argc, t_flags *fl, int s);
-void					cmd_check(char *s, void (**cmd)(char*, t_flags, char*));
-char					*file_check(char *arg, char *cmd);
+void					cmd_check(char *s, void (**cmd)(char*, t_flags, char*, t_u64 l));
+t_u64					file_check(char *arg, char *cmd, char **s);
 
-void					read_stdin(char **str);
+t_u64					read_stdin(char **str);
 
 void					usage(void);
 void					file_error(char *cmd, char *str);
@@ -136,7 +137,7 @@ void					s_error(char *cmd);
 void					flag_error(char c, char *cmd);
 
 void					hash_sha_256(t_sha256_context *c, uint8_t **m,
-						size_t l);
+						t_u64 l);
 void					hash_sha_512(t_sha512_context *c, uint8_t **m,
-						size_t l);
+						t_u64 l);
 #endif

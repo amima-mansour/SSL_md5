@@ -13,36 +13,32 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-t_u64				prepare_msg_sha512(char *msg, t_u8 **new_msg)
+t_u64				prepare_msg_sha512(char *msg, t_u8 **new_msg, t_u64 l)
 {
-	size_t		len;
 	t_u64		new_len;
 
-	len = ft_strlen(msg);
-	new_len = len * 8 + 1;
+	new_len = l * 8 + 1;
 	while (new_len % 1024 != 896)
 		new_len++;
 	new_len /= 8;
 	if (!((*new_msg) = ft_calloc(new_len + 128, 1)))
 		return (0);
-	ft_memcpy((*new_msg), msg, len);
-	(*new_msg)[len] = 128;
+	ft_memcpy_64((*new_msg), msg, l);
+	(*new_msg)[l] = 128;
 	return (new_len);
 }
 
-t_u32				prepare_msg(char *msg, t_u8 **new_msg)
+t_u64				prepare_msg(char *msg, t_u8 **new_msg, t_u64 l)
 {
-	size_t		len;
-	int			new_len;
+	t_u64		new_len;
 
-	len = ft_strlen(msg);
-	new_len = len * 8 + 1;
+	new_len = l * 8 + 1;
 	while (new_len % 512 != 448)
 		new_len++;
 	new_len /= 8;
 	if (!((*new_msg) = ft_calloc(new_len + 64, 1)))
 		return (0);
-	ft_memcpy((*new_msg), msg, len);
-	(*new_msg)[len] = 128;
+	ft_memcpy_64((*new_msg), msg, l);
+	(*new_msg)[l] = 128;
 	return (new_len);
 }

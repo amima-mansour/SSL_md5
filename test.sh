@@ -26,8 +26,8 @@ SHA1_META="openssl sha -sha1,./ft_ssl sha1"
 SHA224_META="openssl sha -sha224,./ft_ssl sha224"
 SHA384_META="openssl sha -sha384,./ft_ssl sha384"
 SHA512_META="openssl sha -sha512,./ft_ssl sha512"
-SHA512224_META="shasum -a 512224,./ft_ssl sha512_224"
-SHA512256_META="shasum -a 512256,./ft_ssl sha512_256"
+SHA512224_META="shasum -a 512224,./ft_ssl sha512224"
+SHA512256_META="shasum -a 512256,./ft_ssl sha512256"
 
 # CHANGEME You may have to change the option of base64 for decrypt (differs in versions)
 BASE64="base64,base64 -d,./ft_ssl base64,./ft_ssl base64 -d,1"
@@ -35,8 +35,8 @@ BASE64_URL="base64 | tr '+/' '-_', tr -- '-_' '+/' | base64 -d,./ft_ssl base64_u
 
 # CHANGEME you can change this if you don't handle such features
 
-# HASH_META="${MD5_META};${MD4_META};${SHA256_META};${SHA1_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
-HASH_META="${MD5_META};${SHA256_META};${SHA512_META};"
+HASH_META="${MD5_META};${SHA256_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
+# HASH_META="${SHA384_META};"
 MODES_META="des-ecb;des-cbc;des-cfb;des-ofb;"
 BASE64_META="${BASE64};${BASE64_URL};"
 
@@ -236,12 +236,10 @@ checks_hash()
 	header "Test script - Hash functions"
 	echo "${HASH_META}" | while IFS=',' read -r -d';' A B; do
 		printf "============ %s ===========\\n" "${B}"
-		# echo "${DATA}" | while read -r -d'.' STR; do
-		# echo "${DATA}" | read -r -d'.' STR;
-		# printf "STR : %s\\n" "${STR}"
-		echo "${DATA}" > "${TMP_FILE}"
-		_check_hash "${TMP_FILE}" "${A}" "${B}"
-		#done
+		echo "${DATA}" | while read -r -d'.' STR; do
+			echo "${STR}" > "${TMP_FILE}"
+			_check_hash "${TMP_FILE}" "${A}" "${B}"
+		done
 		compt_reset
 	done
 }
@@ -254,6 +252,7 @@ checks_random_hash()
 		printf "============ %s ===========\\n" "${B}"
 		for (( i = 0; i < NB_RANDOM_INPUT; i++ )); do
 			head -c ${RANDOM} < /dev/urandom > "${TMP_FILE}"
+			echo `cat "${TMP_FILE}"` > f
 			_check_hash "${TMP_FILE}" "${A}" "${B}"
 		done
 		compt_reset
@@ -440,8 +439,8 @@ else
 fi
 
 if ! [ $RET = "0" ]; then
-	# rm -rf "${TMP_SCORE}"
-	# rm -rf "${TMP_FILE}"
+	rm -rf "${TMP_SCORE}"
+	rm -rf "${TMP_FILE}"
 fi
 
 if [ $LOOP = "1" ] && [ $RET = "0" ]; then

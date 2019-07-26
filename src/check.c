@@ -69,7 +69,7 @@ int				flags_check(char **argv, int argc, t_flags *flags, int start)
 	return (start);
 }
 
-void			cmd_check(char *s, void (**cmd)(char*, t_flags, char*))
+void			cmd_check(char *s, void (**cmd)(char*, t_flags, char*, t_u64))
 {
 	t_hash_functions hash[NB_FUNCTIONS];
 
@@ -92,28 +92,27 @@ void			cmd_check(char *s, void (**cmd)(char*, t_flags, char*))
 		cmd_error(hash, s);
 }
 
-char			*file_check(char *arg, char *cmd)
+t_u64			file_check(char *arg, char *cmd, char **str)
 {
-	char	*str;
 	char	ch;
 	int		fd;
-	size_t	i;
+	t_u64	i;
 
-	str = NULL;
+	(*str) = NULL;
 	i = 0;
 	if ((fd = open(arg, O_RDONLY)) < 0)
 	{
 		file_error(cmd, arg);
-		return (str);
+		return (0);
 	}
 	while (read(fd, &ch, 1) > 0)
 		i++;
 	close(fd);
-	str = (char*)malloc(sizeof(char) * (i + 1));
+	(*str) = (char*)malloc(sizeof(char) * (i + 1));
 	if ((fd = open(arg, O_RDONLY)) > 0)
 		i = 0;
 	while (read(fd, &ch, 1) > 0)
-		str[i++] = ch;
-	str[i] = '\0';
-	return (str);
+		(*str)[i++] = ch;
+	(*str)[i] = '\0';
+	return (i);
 }

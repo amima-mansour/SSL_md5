@@ -41,15 +41,15 @@ void			print_sha256(t_sha256_context c, t_flags fl, char *f, char *s1)
 	}
 }
 
-void			sha256(char *msg, t_flags flags, char *filename)
+void			sha256(char *msg, t_flags flags, char *filename, t_u64 len)
 {
 	t_sha256_context		c;
 	t_u8					*new_msg;
 
 	init_sha256(&c);
-	if ((c.len = prepare_msg(msg, &new_msg)))
+	if ((c.len = prepare_msg(msg, &new_msg, len)))
 	{
-		hash_sha_256(&c, &new_msg, ft_strlen(msg));
+		hash_sha_256(&c, &new_msg, len);
 		free(new_msg);
 		print_sha256(c, flags, filename, "SHA256");
 	}

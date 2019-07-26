@@ -25,15 +25,15 @@ static	void	init_sha224(t_sha256_context *context)
 	context->state[7] = 0xbefa4fa4;
 }
 
-void			sha224(char *msg, t_flags flags, char *filename)
+void			sha224(char *msg, t_flags flags, char *filename, t_u64 len)
 {
 	t_sha256_context	c;
 	t_u8				*new_msg;
 
 	init_sha224(&c);
-	if ((c.len = prepare_msg(msg, &new_msg)))
+	if ((c.len = prepare_msg(msg, &new_msg, len)))
 	{
-		hash_sha_256(&c, &new_msg, ft_strlen(msg));
+		hash_sha_256(&c, &new_msg, len);
 		free(new_msg);
 		print_sha256(c, flags, filename, "SHA224");
 	}

@@ -13,12 +13,12 @@
 #include "../inc/ft_ssl.h"
 #include "../libft/libft.h"
 
-void		read_stdin(char **str)
+t_u64		read_stdin(char **str)
 {
 	char	*buf;
 	char	*temp;
 	char	ch;
-	int		i;
+	t_u64	i;
 
 	*str = NULL;
 	buf = ft_strnew(BUF);
@@ -28,15 +28,17 @@ void		read_stdin(char **str)
 		if ((i % BUF) == 0 && i > 0)
 		{
 			temp = *str;
-			*str = ft_strjoin(temp, buf);
+			*str = ft_strjoin_s(temp, buf, i);
 			temp ? free(temp) : 0;
 			buf ? free(buf) : 0;
 			buf = ft_strnew(BUF);
 		}
-		buf[i++ % BUF] = ch;
+		buf[i % BUF] = ch;
+		++i;
 	}
-	temp = ft_strjoin(*str, buf);
+	temp = ft_strjoin_s(*str, buf, i);
 	buf ? free(buf) : 0;
 	*str ? free(*str) : 0;
 	*str = temp;
+	return (i);
 }

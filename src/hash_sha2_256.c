@@ -29,7 +29,7 @@ static const t_u32 g_k[64] = {
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-static	void		add_len(t_u8 **msg, size_t bits, t_u32 len)
+static	void		add_len(t_u8 **msg, t_u64 bits, t_u32 len)
 {
 	(*msg)[len + 7] = bits;
 	(*msg)[len + 6] = bits >> 8;
@@ -86,9 +86,9 @@ static	void		subtreat_sha256(t_sha256_context *ctx, t_u8 *w)
 		ctx->state[i] += ctx->var[i];
 }
 
-void				hash_sha_256(t_sha256_context *c, t_u8 **new_msg, size_t l)
+void				hash_sha_256(t_sha256_context *c, t_u8 **new_msg, t_u64 l)
 {
-	t_u32 offset;
+	t_u64 offset;
 
 	offset = 0;
 	add_len(new_msg, l * 8, c->len);

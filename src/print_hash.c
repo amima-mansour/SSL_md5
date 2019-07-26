@@ -33,7 +33,6 @@ char	*str_msg_md5(t_md5_context c)
 		convert_to_hex((char)p[3], str + j + 6);
 		j += 8;
 	}
-	str[j] = '\0';
 	return (str);
 }
 

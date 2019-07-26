@@ -109,9 +109,9 @@ static	void		add_len(t_u8 **msg, t_u64 bits, t_u64 len)
 	(*msg)[len + 8] = bits >> 56;
 }
 
-void				hash_sha_512(t_sha512_context *c, t_u8 **new_msg, size_t l)
+void				hash_sha_512(t_sha512_context *c, t_u8 **new_msg, t_u64 l)
 {
-	uint32_t offset;
+	uint64_t offset;
 
 	offset = -1;
 	add_len(new_msg, l * 8, c->len);

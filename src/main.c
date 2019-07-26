@@ -13,24 +13,27 @@
 #include "../libft/libft.h"
 #include "../inc/ft_ssl.h"
 
-void			hash_stdin(t_flags flags, void (*cmd)(char*, t_flags, char*))
+static void		hash_stdin(t_flags flags, void (*cmd)(char*, t_flags, char*, t_u64))
 {
 	char	*str;
+	t_u64	len;		
 
-	read_stdin(&str);
+	len = read_stdin(&str);
 	flags.p == 1 ? ft_putendl(str) : 0;
-	cmd(str, flags, NULL);
+	cmd(str, flags, NULL, len);
 	free(str);
 }
 
-static	void	hash_file(t_flags flags, void (*cmd)(char*, t_flags, char*),
+static	void	hash_file(t_flags flags, void (*cmd)(char*, t_flags, char*, t_u64),
 		char *s, char *c)
 {
 	char *msg;
+	t_u64	len;
 
-	if ((msg = file_check(s, c)))
+	len = file_check(s, c, &msg);
+	if (msg)
 	{
-		cmd(msg, flags, s);
+		cmd(msg, flags, s, len);
 		free(msg);
 	}
 }
@@ -38,7 +41,7 @@ static	void	hash_file(t_flags flags, void (*cmd)(char*, t_flags, char*),
 int				main(int argc, char **argv)
 {
 	t_flags	flags;
-	void	(*cmd)(char*, t_flags, char*);
+	void	(*cmd)(char*, t_flags, char*, t_u64);
 	int		i;
 
 	(argc < 2) ? usage() : 0;
@@ -48,7 +51,7 @@ int				main(int argc, char **argv)
 		hash_stdin(flags, cmd);
 	while (flags.str)
 	{
-		cmd(flags.str, flags, flags.str);
+		cmd(flags.str, flags, flags.str, ft_strlen(flags.str));
 		flags.str = NULL;
 		i = flags_check(argv, argc, &flags, i - 1);
 	}
