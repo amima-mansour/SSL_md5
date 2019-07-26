@@ -35,8 +35,8 @@ BASE64_URL="base64 | tr '+/' '-_', tr -- '-_' '+/' | base64 -d,./ft_ssl base64_u
 
 # CHANGEME you can change this if you don't handle such features
 
-HASH_META="${MD5_META};${SHA256_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
-# HASH_META="${SHA384_META};"
+# HASH_META="${MD5_META};${SHA256_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
+HASH_META="${SHA512_META};"
 MODES_META="des-ecb;des-cbc;des-cfb;des-ofb;"
 BASE64_META="${BASE64};${BASE64_URL};"
 
@@ -323,31 +323,31 @@ checks_leaks()
 		_check_leak "${RD} | ${VG} ${MINE_CMD} -pq -s 'oui' -s 'non'"
 		_check_leak "${RD} | ${VG} ${MINE_CMD} -pqr -s 'oui' -s 'non'"
 	done
-	for ba in base64 base64_url; do
-		_check_leak "${RD} | ${CMD} ${ba}"
-		_check_leak "${RD} | ${CMD} ${ba} -e"
-		_check_leak "${RD} | ${CMD} ${ba} -e -o tmp"
-		_check_leak "${CMD} ${ba} -i ./ft_ssl -o tmp"
-		_check_leak "${CMD} ${ba} -i ./ft_ssl -e -e -e -o tmp"
-		_check_leak "${CMD} ${ba} -i ./ft_ssl -eee -o tmp"
-		_check_leak "${CMD} ${ba} -i tmp -d"
-		_check_leak "${CMD} ${ba} -i ./ft_ssl -d"
-	done
-	eval "${RD} > tmp2"
-	echo "${MODES_META}" | while read -r -d';' MODE; do
-		echo "${KEYS}" | while read -r -d';' KEY; do
-			IV=$(echo -n "${KEY}" | tr '0123456789ABCDEF' '49F378BD6A10C25E')
-			_check_leak "${RD} | ${CMD} ${MODE} -k ${KEY} -v ${IV}"
-			_check_leak "${RD} | ${CMD} ${MODE} -k ${KEY} -v ${IV} -e"
-			_check_leak "${RD} | ${CMD} ${MODE} -k ${KEY} -v ${IV} -e -o tmp"
-			_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -o tmp"
-			_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -e -e -e -o tmp"
-			_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -eee -o tmp"
-			_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp -d"
-			_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -d"
-		done
-	done
-	rm tmp tmp2
+	# for ba in base64 base64_url; do
+	# 	_check_leak "${RD} | ${CMD} ${ba}"
+	# 	_check_leak "${RD} | ${CMD} ${ba} -e"
+	# 	_check_leak "${RD} | ${CMD} ${ba} -e -o tmp"
+	# 	_check_leak "${CMD} ${ba} -i ./ft_ssl -o tmp"
+	# 	_check_leak "${CMD} ${ba} -i ./ft_ssl -e -e -e -o tmp"
+	# 	_check_leak "${CMD} ${ba} -i ./ft_ssl -eee -o tmp"
+	# 	_check_leak "${CMD} ${ba} -i tmp -d"
+	# 	_check_leak "${CMD} ${ba} -i ./ft_ssl -d"
+	# done
+	# eval "${RD} > tmp2"
+	# echo "${MODES_META}" | while read -r -d';' MODE; do
+	# 	echo "${KEYS}" | while read -r -d';' KEY; do
+	# 		IV=$(echo -n "${KEY}" | tr '0123456789ABCDEF' '49F378BD6A10C25E')
+	# 		_check_leak "${RD} | ${CMD} ${MODE} -k ${KEY} -v ${IV}"
+	# 		_check_leak "${RD} | ${CMD} ${MODE} -k ${KEY} -v ${IV} -e"
+	# 		_check_leak "${RD} | ${CMD} ${MODE} -k ${KEY} -v ${IV} -e -o tmp"
+	# 		_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -o tmp"
+	# 		_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -e -e -e -o tmp"
+	# 		_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -eee -o tmp"
+	# 		_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp -d"
+	# 		_check_leak "${CMD} ${MODE} -k ${KEY} -v ${IV} -i tmp2 -d"
+	# 	done
+	# done
+	# rm tmp tmp2
 }
 
 #################################### MAIN ######################################
