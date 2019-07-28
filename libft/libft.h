@@ -18,12 +18,12 @@
 # include <fcntl.h>
 # define BUFF_SIZE 200
 
-typedef struct	s_r
+typedef struct		s_r
 {
-	int			fd;
-	char		*s;
-	struct s_r	*nxt;
-}				t_r;
+	int				fd;
+	char			*s;
+	struct s_r		*nxt;
+}					t_r;
 
 typedef	struct		s_list
 {

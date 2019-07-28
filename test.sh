@@ -35,8 +35,8 @@ BASE64_URL="base64 | tr '+/' '-_', tr -- '-_' '+/' | base64 -d,./ft_ssl base64_u
 
 # CHANGEME you can change this if you don't handle such features
 
-# HASH_META="${MD5_META};${SHA256_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
-HASH_META="${SHA512_META};"
+HASH_META="${MD5_META};${SHA256_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
+# HASH_META="${SHA512_META};"
 MODES_META="des-ecb;des-cbc;des-cfb;des-ofb;"
 BASE64_META="${BASE64};${BASE64_URL};"
 

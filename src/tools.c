@@ -65,19 +65,15 @@ char	*ft_strjoin_s(char const *s1, char const *s2, t_u64 l)
 	size_t	j;
 	t_u64	limit;
 
-	str = ft_strnew(l);
-	if (str)
+	if ((str = (char*)malloc(l + 1)))
 	{
-		i = 0;
+		i = -1;
 		j = 0;
-		limit = (l / BUF - 1) * BUF; 
+		limit = (l / BUF - 1) * BUF;
 		if (l % BUF != 0)
 			limit = l - l % BUF;
-		while (i < limit)
-		{
+		while (++i < limit)
 			str[i] = s1[i];
-			++i;
-		}
 		while (i < l)
 		{
 			str[i] = s2[j];

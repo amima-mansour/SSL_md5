@@ -97,7 +97,7 @@ static	void				subtreat_md5(t_md5_context *c, t_u32 *w)
 	}
 }
 
-void						md5(char *msg, t_flags flags, char *filename, t_u64 l)
+void						md5(char *msg, t_flags f, char *filename, t_u64 l)
 {
 	t_u64				offset;
 	t_md5_context		c;
@@ -122,6 +122,6 @@ void						md5(char *msg, t_flags flags, char *filename, t_u64 l)
 				c.state[c.i] += c.var[c.i];
 		}
 		free(new_msg);
-		print_md5(c, flags, filename);
+		print_md5(c, f, filename);
 	}
 }

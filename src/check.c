@@ -6,7 +6,7 @@
 /*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 09:46:26 by amansour          #+#    #+#             */
-/*   Updated: 2019/07/25 11:43:29 by amansour         ###   ########.fr       */
+/*   Updated: 2019/07/28 15:58:13 by amansour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,22 +22,32 @@ void			init_flags(t_flags *flags)
 	flags->str = NULL;
 }
 
-void			all_cmd(t_hash_functions hash[])
+void			flag_elements(int *start, t_flags *flags, int argc, char **argv)
 {
-	hash[0].name = "md5";
-	hash[1].name = "sha256";
-	hash[3].name = "sha512";
-	hash[2].name = "sha224";
-	hash[4].name = "sha384";
-	hash[5].name = "sha512256";
-	hash[6].name = "sha512224";
-	hash[0].f = &md5;
-	hash[1].f = &sha256;
-	hash[2].f = &sha224;
-	hash[3].f = &sha512;
-	hash[4].f = &sha384;
-	hash[6].f = &sha512224;
-	hash[5].f = &sha512256;
+	char *s;
+
+	s = (char*)(argv[*start] + 1);
+	while (*s)
+	{
+		if (*s == 'r')
+			flags->r = 1;
+		else if (*s == 'p')
+			flags->p = 1;
+		else if (*s == 's')
+		{
+			flags->s = 1;
+			if (ft_strlen(s) > 1 || ((*start + 1) == argc))
+				flags->str = (char*)(s + 1);
+			else
+				flags->str = argv[++(*start)];
+			break ;
+		}
+		else if (*s == 'q')
+			flags->q = 1;
+		else
+			flag_error(*s, argv[1]);
+		s++;
+	}
 }
 
 int				flags_check(char **argv, int argc, t_flags *flags, int start)
@@ -46,25 +56,11 @@ int				flags_check(char **argv, int argc, t_flags *flags, int start)
 		init_flags(flags);
 	while (++start < argc)
 	{
-		if (ft_strcmp(argv[start], "-r") == 0)
-			flags->r = 1;
-		else if (ft_strcmp(argv[start], "-p") == 0)
-			flags->p = 1;
-		else if (ft_strcmp(argv[start], "-s") == 0)
-		{
-			flags->s = 1;
-			if (++start == argc)
-				s_error(argv[1]);
-			else
-				flags->str = argv[start++];
-			break ;
-		}
-		else if (ft_strcmp(argv[start], "-q") == 0)
-			flags->q = 1;
-		else if (argv[start][0] == '-')
-			flag_error(argv[start][1], argv[1]);
-		else
-			break ;
+		if (argv[start][0] != '-')
+			return (start);
+		flag_elements(&start, flags, argc, argv);
+		if (flags->str)
+			return (start + 1);
 	}
 	return (start);
 }
@@ -73,7 +69,13 @@ void			cmd_check(char *s, void (**cmd)(char*, t_flags, char*, t_u64))
 {
 	t_hash_functions hash[NB_FUNCTIONS];
 
-	all_cmd(hash);
+	hash[0].name = "md5";
+	hash[1].name = "sha256";
+	hash[3].name = "sha512";
+	hash[2].name = "sha224";
+	hash[4].name = "sha384";
+	hash[5].name = "sha512256";
+	hash[6].name = "sha512224";
 	if (ft_strcmp(s, "md5") == 0)
 		*cmd = &md5;
 	else if (ft_strcmp(s, "sha256") == 0)

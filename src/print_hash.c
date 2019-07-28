@@ -22,7 +22,7 @@ char	*str_msg_md5(t_md5_context c)
 
 	i = -1;
 	j = 0;
-	if (!(str = (char*)malloc(32)))
+	if (!(str = (char*)malloc(33)))
 		return (NULL);
 	while (++i < 4)
 	{
@@ -33,6 +33,7 @@ char	*str_msg_md5(t_md5_context c)
 		convert_to_hex((char)p[3], str + j + 6);
 		j += 8;
 	}
+	str[32] = '\0';
 	return (str);
 }
 
@@ -62,7 +63,7 @@ char	*str_msg_sha(t_sha256_context *c1, t_sha512_context *c2, int d, int w)
 
 void	print_hash(char *s, t_flags flags, char *filename, char *cmd)
 {
-	if ((filename || (flags.s && filename)) && !flags.r && !flags.q)
+	if (flags.s && filename && !flags.r && !flags.q)
 	{
 		ft_putstr(cmd);
 		ft_putstr(" (");
@@ -77,7 +78,11 @@ void	print_hash(char *s, t_flags flags, char *filename, char *cmd)
 	if (filename && !flags.q && flags.r)
 	{
 		ft_putstr(" ");
+		if (flags.s && flags.str)
+			ft_putstr("\"");
 		ft_putstr(filename);
+		if (flags.s && flags.str)
+			ft_putstr("\"");
 	}
 	ft_putstr("\n");
 }
