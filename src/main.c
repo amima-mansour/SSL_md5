@@ -6,7 +6,7 @@
 /*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/22 14:23:47 by amansour          #+#    #+#             */
-/*   Updated: 2019/07/25 10:26:23 by amansour         ###   ########.fr       */
+/*   Updated: 2019/08/02 14:46:38 by amansour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ int				main(int argc, char **argv)
 	if (flags.str && ft_strcmp(flags.str, "") == 0)
 		s_error(argv[1]);
 	i = all_flag(&flags, argc, argv, cmd);
-	if (i == argc && flags.p && !flags.s)
-		cmd("", flags, NULL, 0);
+	//if (i == argc && flags.p && !flags.s && (flags.r || flags.q))
+	//	cmd("", flags, NULL, 0);
 	while (i < argc)
 	{
 		hash_file(flags, cmd, argv[i], argv[1]);
