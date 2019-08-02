@@ -36,11 +36,13 @@ void			flag_elements(int *start, t_flags *flags, int argc, char **argv)
 		else if (*s == 's')
 		{
 			flags->s = 1;
-			if (ft_strlen(s) > 1 || ((*start + 1) == argc))
+			if (ft_strlen(s) > 1)
 				flags->str = (char*)(s + 1);
-			else
+			else if ((*start + 1) != argc)
 				flags->str = argv[++(*start)];
-			break ;
+            else
+                flags->str = NULL;
+            break ;
 		}
 		else if (*s == 'q')
 			flags->q = 1;

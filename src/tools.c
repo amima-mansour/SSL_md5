@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_ssl.h"
+#include "ft_ssl.h"
 #include "../libft/libft.h"
 
 void	convert_to_hex(unsigned char nb, char *s)
@@ -83,4 +83,16 @@ char	*ft_strjoin_s(char const *s1, char const *s2, t_u64 l)
 		str[l] = '\0';
 	}
 	return (str);
+}
+
+void    ft_putstr_size(char *s, size_t size)
+{
+    size_t i;
+
+    i = 0;
+    while (i < size)
+    {
+        ft_putchar(s[i]);
+        i += 1;
+    }
 }

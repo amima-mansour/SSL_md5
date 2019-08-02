@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_ssl.h"
+#include "ft_ssl.h"
 #include "../libft/libft.h"
 
 void		read_process(char **buf, int i, char **str)
@@ -22,7 +22,6 @@ void		read_process(char **buf, int i, char **str)
 	temp ? free(temp) : 0;
 	*buf ? free(*buf) : 0;
 	*buf = ft_strnew(BUF);
-	*buf[BUF] = '\0';
 }
 
 t_u64		read_stdin(char **str)
@@ -35,12 +34,11 @@ t_u64		read_stdin(char **str)
 	*str = NULL;
 	buf = ft_strnew(BUF);
 	i = 0;
-	buf[BUF] = '\0';
-	while (read(0, &ch, 1) > 0)
+    while (read(0, &ch, 1) > 0)
 	{
 		if ((i % BUF) == 0 && i > 0)
 			read_process(&buf, i, str);
-		buf[i % BUF] = ch;
+        buf[i % BUF] = ch;
 		++i;
 	}
 	temp = ft_strjoin_s(*str, buf, i);

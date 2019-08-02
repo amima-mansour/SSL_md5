@@ -17,10 +17,10 @@ static void		hash_stdin(t_flags fl, void (*c)(char*, t_flags, char*, t_u64))
 {
 	char	*str;
 	t_u64	len;
-
+    
 	len = read_stdin(&str);
-	fl.p > 0 ? ft_putstr(str) : 0;
-	c(str, fl, NULL, len);
+    fl.p > 0 ? ft_putstr_size(str, len) : 0;
+    c(str, fl, NULL, len);
 	free(str);
 }
 
@@ -42,7 +42,7 @@ static	void	p_flag(t_flags *flags, void (*cmd)(char*, t_flags,
 				char*, t_u64))
 {
 	hash_stdin(*flags, cmd);
-	while (flags->p > 1)
+    while (flags->p > 1)
     {
 		cmd("", *flags, NULL, 0);
         flags->p -= 1;
@@ -57,11 +57,12 @@ static int		all_flag(t_flags *f, int argc, char **argv, void (*c)(char*,
 	i = flags_check(argv, argc, f, 1);
 	if (f->p || (!f->s && (i == argc)))
 		p_flag(f, c);
-	while (f->str && ft_strcmp(f->str, ""))
+    while (f->str)
 	{
 		f->p = 0;
 		c(f->str, *f, f->str, ft_strlen(f->str));
-		f->str = NULL;
+		f->s = 0;
+        f->str = NULL;
 		i = flags_check(argv, argc, f, i - 1);
 		if (f->p)
 			p_flag(f, c);
@@ -78,7 +79,7 @@ int				main(int argc, char **argv)
 	(argc < 2) ? usage() : 0;
 	cmd_check(argv[1], &cmd);
 	i = all_flag(&flags, argc, argv, cmd);	
-    if (flags.str && ft_strcmp(flags.str, "") == 0)
+    if (flags.s && !flags.str)
 		s_error(argv[1]);
     if (i == argc && flags.p && !flags.s && (flags.r || flags.q))
 		cmd("", flags, NULL, 0);

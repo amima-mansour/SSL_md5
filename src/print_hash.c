@@ -63,7 +63,7 @@ char	*str_msg_sha(t_sha256_context *c1, t_sha512_context *c2, int d, int w)
 
 void	print_hash(char *s, t_flags flags, char *filename, char *cmd)
 {
-	if (flags.s && filename && !flags.r && !flags.q)
+	if ((flags.s || filename) && !flags.r && !flags.q)
 	{
 		ft_putstr(cmd);
 		ft_putstr(" (");

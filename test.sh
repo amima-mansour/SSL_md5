@@ -21,11 +21,11 @@
 
 MD5_META="openssl md5,./ft_ssl md5"
 MD4_META="openssl md4,./ft_ssl md4"
-SHA256_META="openssl sha -sha256,./ft_ssl sha256"
-SHA1_META="openssl sha -sha1,./ft_ssl sha1"
-SHA224_META="openssl sha -sha224,./ft_ssl sha224"
-SHA384_META="openssl sha -sha384,./ft_ssl sha384"
-SHA512_META="openssl sha -sha512,./ft_ssl sha512"
+SHA256_META="shasum -a 256,./ft_ssl sha256"
+SHA1_META="shasumm -a 1,./ft_ssl sha1"
+SHA224_META="shasum -a 224,./ft_ssl sha224"
+SHA384_META="shasum -a 384,./ft_ssl sha384"
+SHA512_META="shasum -a 512,./ft_ssl sha512"
 SHA512224_META="shasum -a 512224,./ft_ssl sha512224"
 SHA512256_META="shasum -a 512256,./ft_ssl sha512256"
 
@@ -36,7 +36,7 @@ BASE64_URL="base64 | tr '+/' '-_', tr -- '-_' '+/' | base64 -d,./ft_ssl base64_u
 # CHANGEME you can change this if you don't handle such features
 
 HASH_META="${MD5_META};${SHA256_META};${SHA224_META};${SHA384_META};${SHA512_META};${SHA512224_META};${SHA512256_META};"
-# HASH_META="${SHA512_META};"
+#HASH_META="${SHA512_META};"
 MODES_META="des-ecb;des-cbc;des-cfb;des-ofb;"
 BASE64_META="${BASE64};${BASE64_URL};"
 
@@ -253,7 +253,7 @@ checks_random_hash()
 		for (( i = 0; i < NB_RANDOM_INPUT; i++ )); do
 			head -c ${RANDOM} < /dev/urandom > "${TMP_FILE}"
 			echo `cat "${TMP_FILE}"` > f
-			_check_hash "${TMP_FILE}" "${A}" "${B}"
+            _check_hash "${TMP_FILE}" "${A}" "${B}"
 		done
 		compt_reset
 	done
