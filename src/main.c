@@ -41,12 +41,8 @@ static	void	hash_file(t_flags fl, void (*cmd)(char*, t_flags, char*, t_u64)
 static	void	p_flag(t_flags *flags, void (*cmd)(char*, t_flags,
 				char*, t_u64))
 {
-	if (flags->p > 0)
-	{
-		hash_stdin(*flags, cmd);
-		//*r = 1;
-	}
-	while (flags->p != 1)
+	hash_stdin(*flags, cmd);
+	while (flags->p > 1)
     {
 		cmd("", *flags, NULL, 0);
         flags->p -= 1;
@@ -81,8 +77,8 @@ int				main(int argc, char **argv)
 
 	(argc < 2) ? usage() : 0;
 	cmd_check(argv[1], &cmd);
-	i = all_flag(&flags, argc, argv, cmd);
-	if (flags.str && ft_strcmp(flags.str, "") == 0)
+	i = all_flag(&flags, argc, argv, cmd);	
+    if (flags.str && ft_strcmp(flags.str, "") == 0)
 		s_error(argv[1]);
     if (i == argc && flags.p && !flags.s && (flags.r || flags.q))
 		cmd("", flags, NULL, 0);
