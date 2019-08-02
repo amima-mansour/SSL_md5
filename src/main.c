@@ -81,8 +81,6 @@ int				main(int argc, char **argv)
 
 	(argc < 2) ? usage() : 0;
 	cmd_check(argv[1], &cmd);
-	/*if (flags.str && ft_strcmp(flags.str, "") == 0)
-		s_error(argv[1]);*/
 	i = all_flag(&flags, argc, argv, cmd);
 	if (flags.str && ft_strcmp(flags.str, "") == 0)
 		s_error(argv[1]);
