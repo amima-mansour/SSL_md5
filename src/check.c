@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_ssl.h"
+#include "ft_ssl.h"
 #include "../libft/libft.h"
 
 void			init_flags(t_flags *flags)
@@ -32,7 +32,7 @@ void			flag_elements(int *start, t_flags *flags, int argc, char **argv)
 		if (*s == 'r')
 			flags->r = 1;
 		else if (*s == 'p')
-			flags->p = 1;
+			flags->p += 1;
 		else if (*s == 's')
 		{
 			flags->s = 1;
@@ -59,7 +59,7 @@ int				flags_check(char **argv, int argc, t_flags *flags, int start)
 		if (argv[start][0] != '-')
 			return (start);
 		flag_elements(&start, flags, argc, argv);
-		if (flags->str)
+        if (flags->str)
 			return (start + 1);
 	}
 	return (start);

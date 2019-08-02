@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
-#include "../inc/ft_ssl.h"
+#include "ft_ssl.h"
 
 static void		hash_stdin(t_flags fl, void (*c)(char*, t_flags, char*, t_u64))
 {
@@ -19,7 +19,7 @@ static void		hash_stdin(t_flags fl, void (*c)(char*, t_flags, char*, t_u64))
 	t_u64	len;
 
 	len = read_stdin(&str);
-	fl.p == 1 ? ft_putstr(str) : 0;
+	fl.p > 0 ? ft_putstr(str) : 0;
 	c(str, fl, NULL, len);
 	free(str);
 }
@@ -38,28 +38,29 @@ static	void	hash_file(t_flags fl, void (*cmd)(char*, t_flags, char*, t_u64)
 	}
 }
 
-static	void	p_flag(t_flags *flags, int *r, void (*cmd)(char*, t_flags,
+static	void	p_flag(t_flags *flags, void (*cmd)(char*, t_flags,
 				char*, t_u64))
 {
-	if (!(*r))
+	if (flags->p > 0)
 	{
 		hash_stdin(*flags, cmd);
-		*r = 1;
+		//*r = 1;
 	}
-	else
+	while (flags->p != 1)
+    {
 		cmd("", *flags, NULL, 0);
+        flags->p -= 1;
+    }
 }
 
 static int		all_flag(t_flags *f, int argc, char **argv, void (*c)(char*,
 				t_flags, char*, t_u64))
 {
 	int i;
-	int r;
 
 	i = flags_check(argv, argc, f, 1);
-	r = 0;
 	if (f->p || (!f->s && (i == argc)))
-		p_flag(f, &r, c);
+		p_flag(f, c);
 	while (f->str && ft_strcmp(f->str, ""))
 	{
 		f->p = 0;
@@ -67,7 +68,7 @@ static int		all_flag(t_flags *f, int argc, char **argv, void (*c)(char*,
 		f->str = NULL;
 		i = flags_check(argv, argc, f, i - 1);
 		if (f->p)
-			p_flag(f, &r, c);
+			p_flag(f, c);
 	}
 	return (i);
 }
@@ -80,11 +81,13 @@ int				main(int argc, char **argv)
 
 	(argc < 2) ? usage() : 0;
 	cmd_check(argv[1], &cmd);
+	/*if (flags.str && ft_strcmp(flags.str, "") == 0)
+		s_error(argv[1]);*/
+	i = all_flag(&flags, argc, argv, cmd);
 	if (flags.str && ft_strcmp(flags.str, "") == 0)
 		s_error(argv[1]);
-	i = all_flag(&flags, argc, argv, cmd);
-	//if (i == argc && flags.p && !flags.s && (flags.r || flags.q))
-	//	cmd("", flags, NULL, 0);
+    if (i == argc && flags.p && !flags.s && (flags.r || flags.q))
+		cmd("", flags, NULL, 0);
 	while (i < argc)
 	{
 		hash_file(flags, cmd, argv[i], argv[1]);
