@@ -10,8 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/ft_ssl.h"
+#include "ft_ssl.h"
 #include "../libft/libft.h"
+
+void	convert_to_hex(unsigned char nb, char *s)
+{
+	s[0] = HEXBASE[nb / 16];
+	s[1] = HEXBASE[nb % 16];
+}
 
 char	*str_msg_md5(t_md5_context c)
 {

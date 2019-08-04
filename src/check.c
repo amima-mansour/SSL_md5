@@ -6,7 +6,7 @@
 /*   By: amansour <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/25 09:46:26 by amansour          #+#    #+#             */
-/*   Updated: 2019/07/28 15:58:13 by amansour         ###   ########.fr       */
+/*   Updated: 2019/08/04 12:01:19 by amansour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ void			init_flags(t_flags *flags)
 	flags->p = 0;
 	flags->s = 0;
 	flags->q = 0;
+	flags->error = 0;
 	flags->str = NULL;
 }
 
-void			flag_elements(int *start, t_flags *flags, int argc, char **argv)
+char			*flag_elements(int *start, t_flags *flags, char **argv)
 {
 	char *s;
 
@@ -36,32 +37,41 @@ void			flag_elements(int *start, t_flags *flags, int argc, char **argv)
 		else if (*s == 's')
 		{
 			flags->s = 1;
-			if (ft_strlen(s) > 1)
-				flags->str = (char*)(s + 1);
-			else if ((*start + 1) != argc)
-				flags->str = argv[++(*start)];
-            else
-                flags->str = NULL;
-            break ;
+			return (s);
 		}
 		else if (*s == 'q')
 			flags->q = 1;
 		else
-			flag_error(*s, argv[1]);
+		{
+			flags->error = *s;
+			return (NULL);
+		}
 		s++;
 	}
+	return (NULL);
 }
 
 int				flags_check(char **argv, int argc, t_flags *flags, int start)
 {
+	char *s;
+
 	if (start == 1)
 		init_flags(flags);
 	while (++start < argc)
 	{
 		if (argv[start][0] != '-')
 			return (start);
-		flag_elements(&start, flags, argc, argv);
-        if (flags->str)
+		s = flag_elements(&start, flags, argv);
+		if (flags->s)
+		{
+			if (ft_strlen(s) > 1)
+				flags->str = (char*)(s + 1);
+			else if ((start + 1) != argc)
+				flags->str = argv[++start];
+			else
+				flags->str = NULL;
+		}
+		if (flags->str || flags->error != 0)
 			return (start + 1);
 	}
 	return (start);

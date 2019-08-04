@@ -13,12 +13,6 @@
 #include "ft_ssl.h"
 #include "../libft/libft.h"
 
-void	convert_to_hex(unsigned char nb, char *s)
-{
-	s[0] = HEXBASE[nb / 16];
-	s[1] = HEXBASE[nb % 16];
-}
-
 int		ft_strcmp(char const *str1, char const *str2)
 {
 	unsigned char	*s2;
@@ -85,14 +79,14 @@ char	*ft_strjoin_s(char const *s1, char const *s2, t_u64 l)
 	return (str);
 }
 
-void    ft_putstr_size(char *s, size_t size)
+void	ft_putstr_size(char *s, size_t size)
 {
-    size_t i;
+	size_t	i;
 
-    i = 0;
-    while (i < size)
-    {
-        ft_putchar(s[i]);
-        i += 1;
-    }
+	i = 0;
+	while (i < size)
+	{
+		ft_putchar(s[i]);
+		i += 1;
+	}
 }

@@ -85,6 +85,7 @@ typedef struct			s_flags
 	char				q;
 	char				s;
 	char				p;
+	char				error;
 	char				*str;
 }						t_flags;
 
@@ -98,7 +99,7 @@ void					*ft_memcpy_64(void *dest, const void *src, t_u64 len);
 void					*ft_calloc(t_u64 nmemb, size_t size);
 void					convert_to_hex(unsigned char nb, char *s);
 char					*ft_strjoin_s(char const *s1, char const *s2, t_u64 l);
-void                    ft_putstr_size(char *s, size_t size);
+void					ft_putstr_size(char *s, size_t size);
 
 void					md5(char *msg, t_flags flags, char *f, t_u64 l);
 void					print_md5(t_md5_context c, t_flags flags, char *f);

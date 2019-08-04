@@ -34,11 +34,11 @@ t_u64		read_stdin(char **str)
 	*str = NULL;
 	buf = ft_strnew(BUF);
 	i = 0;
-    while (read(0, &ch, 1) > 0)
+	while (read(0, &ch, 1) > 0)
 	{
 		if ((i % BUF) == 0 && i > 0)
 			read_process(&buf, i, str);
-        buf[i % BUF] = ch;
+		buf[i % BUF] = ch;
 		++i;
 	}
 	temp = ft_strjoin_s(*str, buf, i);
